@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <ProjectReference Include="..\..\src\Amaury.Store.DynamoDb\Amaury.Store.DynamoDb.csproj" />
+      <ProjectReference Include="..\..\src\Amaury\Amaury.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Application\Events\" />
+      <Folder Include="Infrastructure\ExternalServices\" />
+    </ItemGroup>
+
+</Project>
