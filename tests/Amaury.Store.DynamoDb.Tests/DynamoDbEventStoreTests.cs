@@ -1,10 +1,10 @@
 using Amaury.Abstractions;
 using Amaury.Abstractions.Persistence;
-using Amaury.Store.DynamoDb.Tests.Fixtures;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Amaury.Test.Fixtures;
 using Xunit;
 
 namespace Amaury.Store.DynamoDb.Tests
