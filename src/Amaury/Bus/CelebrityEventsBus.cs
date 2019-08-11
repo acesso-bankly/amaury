@@ -1,27 +1,38 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amaury.Abstractions;
 using Amaury.Abstractions.Bus;
-using Amaury.Abstractions.Stores;
+using Amaury.Abstractions.Persistence;
 using MediatR;
 
 namespace Amaury.Bus
 {
-    public sealed class CelebrityEventsBus<TEntity> : ICelebrityEventsBus<TEntity> where TEntity : class
+    public class CelebrityEventsBus : ICelebrityEventsBus
     {
         private readonly IMediator _mediator;
-        private readonly ICelebrityEventStore<TEntity> _celebrityEventStore;
+        private readonly ICelebrityEventStore _eventStore;
 
-        public CelebrityEventsBus(IMediator mediator, ICelebrityEventStore<TEntity> celebrityEventStore)
+        public CelebrityEventsBus(ICelebrityEventStore eventStore, IMediator mediator)
         {
-            _celebrityEventStore = celebrityEventStore ?? throw  new ArgumentNullException(nameof(celebrityEventStore));
+            _eventStore = eventStore ?? throw new ArgumentNullException(nameof(eventStore));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        
-        public async Task RaiseEvent<TEvent>(TEvent celebrityEvent) where TEvent : ICelebrityEvent<TEntity>
+
+        public async Task RaiseEvents<TEvents>(TEvents events) where TEvents : IEnumerable<ICelebrityEvent>
         {
-            await _celebrityEventStore.Commit(celebrityEvent);
+            foreach (var @event in events)
+            {
+                await RaiseEvent(@event);
+            }
+        }
+
+        public async Task RaiseEvent<TEvent>(TEvent celebrityEvent) where TEvent : ICelebrityEvent
+        {
+            await _eventStore.Commit(celebrityEvent);
             await _mediator.Publish(celebrityEvent);
         }
+
+        public async Task<IReadOnlyCollection<ICelebrityEvent>> Get(string aggregatedId) => await _eventStore.Get(aggregatedId);
     }
 }

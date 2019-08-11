@@ -1,9 +1,9 @@
-using Amaury.Abstractions;
 using System;
+using Amaury.Abstractions;
 
-namespace Amaury.Store.DynamoDb.Tests.Fixtures
+namespace Amaury.Test.Fixtures
 {
-    internal class FakeCelebrityEvent : ICelebrityEvent
+    public class FakeCelebrityEvent : ICelebrityEvent
     {
         public FakeCelebrityEvent(string aggregatedId, dynamic data)
         {
