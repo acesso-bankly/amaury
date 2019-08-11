@@ -3,16 +3,12 @@ using MediatR;
 
 namespace Amaury.Abstractions
 {
-    public interface ICelebrityEvent<out TEntity> : INotification where TEntity : class
+    public interface ICelebrityEvent : INotification
     {
-        string AggregatedId { get; }
-
-        TEntity Data { get; }
-
-        string EventId { get; }
-
-        string Name { get; }
-
-        DateTime Timestamp { get; }
+        string AggregatedId { get; set; }
+        string EventId { get; set; }
+        string Name { get; set; }
+        DateTime Timestamp { get; set; }
+        dynamic Data { get; set; }
     }
 }
