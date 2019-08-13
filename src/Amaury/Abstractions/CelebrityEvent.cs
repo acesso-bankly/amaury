@@ -3,21 +3,22 @@ using System;
 
 namespace Amaury.Abstractions
 {
-    public abstract class CelebrityEvent<TEntity> : ICelebrityEvent<TEntity> where TEntity : class
+    public abstract class CelebrityEvent : ICelebrityEvent
     {
-        protected CelebrityEvent(Guid aggregatedId, TEntity data)
+        protected CelebrityEvent(string aggregatedId, dynamic data)
         {
-            AggregatedId = aggregatedId.ToString();
+            AggregatedId = aggregatedId;
+            Data = data;
+
             Name = GetType().GetEventName();
             Timestamp = DateTime.Now;
-            EventId = $"{Timestamp:yyyy-MM-ddTHH:mm:ss.fffffff}:{aggregatedId}";
-            Data = data;
+            EventId = Guid.NewGuid().ToString();
         }
 
-        public string Name { get; }
-        public string AggregatedId { get; }
-        public string EventId { get; }
-        public DateTime Timestamp { get; }
-        public TEntity Data { get; }
+        public string AggregatedId { get; set; }
+        public dynamic Data { get; set; }
+        public string Name { get; set; }
+        public string EventId { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }
