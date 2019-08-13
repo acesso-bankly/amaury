@@ -5,9 +5,7 @@ namespace Amaury.Abstractions.Bus
 {
     public interface ICelebrityEventsBus
     {
-        Task RaiseEvent<TEvent>(TEvent celebrityEvent) where TEvent : ICelebrityEvent;
-        Task RaiseEvents<TEvents>(TEvents events) where TEvents : IEnumerable<ICelebrityEvent>;
-
+        Task Commit<TEvent>(TEvent @event) where TEvent : ICelebrityEvent;
         Task<IReadOnlyCollection<ICelebrityEvent>> Get(string aggregatedId);
     }
 }

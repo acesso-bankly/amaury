@@ -1,9 +1,8 @@
 using System;
-using MediatR;
 
 namespace Amaury.Abstractions
 {
-    public interface ICelebrityEvent : INotification
+    public interface ICelebrityEvent
     {
         string AggregatedId { get; set; }
         string EventId { get; set; }
