@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Amaury.Abstractions
 {
-    public interface IEventSourcedAggregate<out TEntity> where TEntity : class, new()
+    public interface IEventSourcedAggregate<out TEntity> : IAggregate where TEntity : class, new()
     {
-        TEntity Reduce();
+        Queue<ICelebrityEvent> CommittedEvents { get; }
+        Queue<ICelebrityEvent> PendingEvents { get; }
     }
 }

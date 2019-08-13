@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5,19 +6,24 @@ namespace Amaury.Abstractions
 {
     public class EventSourcedAggregate<TEntity> : IEventSourcedAggregate<TEntity> where TEntity : class, new()
     {
-        protected EventSourcedAggregate(Queue<ICelebrityEvent> commitedEvents) => CommittedEvents = commitedEvents;
+        protected EventSourcedAggregate(Queue<ICelebrityEvent> commitedEvents)
+        {
+            CommittedEvents = commitedEvents;
+            PendingEvents = new Queue<ICelebrityEvent>();
+        }
 
-        protected Queue<ICelebrityEvent> CommittedEvents { get; }
-        protected Queue<ICelebrityEvent> PendingEvents { get; set; }
+        public string Id { get; protected set; }
+        public Queue<ICelebrityEvent> CommittedEvents { get; }
+        public Queue<ICelebrityEvent> PendingEvents { get; }
 
-        public virtual TEntity Reduce()
+        protected virtual TEntity Reduce(IReadOnlyCollection<ICelebrityEvent> events)
         {
             var entity = new TEntity();
             var properties = typeof(TEntity).GetProperties();
 
-            foreach (var @event in CommittedEvents)
+            foreach (var @event in events)
             {
-                object data = @event.Data;
+                var data = @event.Data;
                 var propertyNames = data.GetType().GetProperties().Select(p => p.Name).ToArray();
 
                 foreach(var propertyName in propertyNames)
@@ -35,5 +41,7 @@ namespace Amaury.Abstractions
 
             return entity;
         }
+
+        protected virtual void Append(ICelebrityEvent @event) => PendingEvents.Enqueue(@event);
     }
 }
