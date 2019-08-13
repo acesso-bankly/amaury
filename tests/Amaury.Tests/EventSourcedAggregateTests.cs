@@ -13,12 +13,7 @@ namespace Amaury.Tests
 {
     public class EventSourcedAggregateTests
     {
-        private readonly ICelebrityEventsBus _eventBus;
-
-        public EventSourcedAggregateTests()
-        {
-            _eventBus = Substitute.For<ICelebrityEventsBus>();
-        }
+        public EventSourcedAggregateTests() { }
 
         [Fact(DisplayName = "Deve reduzir os eventos para a entidade")]
         public async Task ShouldReduceEventsToEntity()
@@ -30,9 +25,8 @@ namespace Amaury.Tests
             events.Enqueue(fisrtEvent);
             events.Enqueue(secondEvent);
 
-            _eventBus.Get(Arg.Any<string>()).ReturnsForAnyArgs(events);
+            var fooBar = new FooBar(events);
 
-            var fooBar = new FooBar(_eventBus);
             var reduced = await fooBar.Reduce(fooBar, expectedAggregatedId);
 
             reduced.Should().NotBeEquivalentTo(fisrtEvent.Data);

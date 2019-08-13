@@ -1,28 +1,23 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Amaury.Abstractions.Bus;
 
 namespace Amaury.Abstractions
 {
     public class EventSourcedAggregate<TEntity> : IEventSourcedAggregate<TEntity> where TEntity : class
     {
-        protected EventSourcedAggregate(ICelebrityEventsBus bus)
-        {
-            Bus = bus ?? throw new ArgumentNullException(nameof(bus));
-        }
+        protected EventSourcedAggregate(Queue<ICelebrityEvent> commitedEvents) => CommitedEvents = commitedEvents;
 
-        public ICelebrityEventsBus Bus { get; }
+        protected Queue<ICelebrityEvent> CommitedEvents { get; }
+        protected Queue<ICelebrityEvent> PendingEvents { get; set; }
 
         public virtual async Task<TEntity> Reduce(TEntity entity, string aggregatedId)
         {
             var properties = typeof(TEntity).GetProperties();
 
-            var events = await Bus.Get(aggregatedId);
+            if (CommitedEvents.Count == 0) { return default; }
 
-            if (events.Count == 0) { return default; }
-
-            foreach (var @event in events)
+            foreach (var @event in CommitedEvents)
             {
                 object data = @event.Data;
                 var propertyNames = data.GetType().GetProperties().Select(p => p.Name).ToArray();
