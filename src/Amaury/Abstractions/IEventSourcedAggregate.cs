@@ -2,8 +2,8 @@ using System.Threading.Tasks;
 
 namespace Amaury.Abstractions
 {
-    public interface IEventSourcedAggregate<TEntity> where TEntity : class
+    public interface IEventSourcedAggregate<out TEntity> where TEntity : class, new()
     {
-        TEntity Reduce(TEntity entity, string aggregatedId);
+        TEntity Reduce();
     }
 }

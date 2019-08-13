@@ -3,20 +3,19 @@ using System.Linq;
 
 namespace Amaury.Abstractions
 {
-    public class EventSourcedAggregate<TEntity> : IEventSourcedAggregate<TEntity> where TEntity : class
+    public class EventSourcedAggregate<TEntity> : IEventSourcedAggregate<TEntity> where TEntity : class, new()
     {
-        protected EventSourcedAggregate(Queue<ICelebrityEvent> commitedEvents) => CommitedEvents = commitedEvents;
+        protected EventSourcedAggregate(Queue<ICelebrityEvent> commitedEvents) => CommittedEvents = commitedEvents;
 
-        protected Queue<ICelebrityEvent> CommitedEvents { get; }
+        protected Queue<ICelebrityEvent> CommittedEvents { get; }
         protected Queue<ICelebrityEvent> PendingEvents { get; set; }
 
-        public virtual TEntity Reduce(TEntity entity, string aggregatedId)
+        public virtual TEntity Reduce()
         {
+            var entity = new TEntity();
             var properties = typeof(TEntity).GetProperties();
 
-            if (CommitedEvents.Count == 0) { return default; }
-
-            foreach (var @event in CommitedEvents)
+            foreach (var @event in CommittedEvents)
             {
                 object data = @event.Data;
                 var propertyNames = data.GetType().GetProperties().Select(p => p.Name).ToArray();

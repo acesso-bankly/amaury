@@ -9,15 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{F4F6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury", "src\Amaury\Amaury.csproj", "{F900915C-37CA-4166-9F42-748ED6484BC6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury.Sample.MediatR", "samples\Amaury.Sample.MediatR\Amaury.Sample.MediatR.csproj", "{8DA33A64-A2D0-4F18-A0B0-ADBAF797D908}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury.Store.DynamoDb", "src\Amaury.Store.DynamoDb\Amaury.Store.DynamoDb.csproj", "{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{65A9D093-395E-4F3C-AE0E-DAA4DA6F273A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amaury.Store.DynamoDb.Tests", "tests\Amaury.Store.DynamoDb.Tests\Amaury.Store.DynamoDb.Tests.csproj", "{2FDF2841-938D-4CF9-8536-A1E4A5F07DFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury.Store.DynamoDb.Tests", "tests\Amaury.Store.DynamoDb.Tests\Amaury.Store.DynamoDb.Tests.csproj", "{2FDF2841-938D-4CF9-8536-A1E4A5F07DFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amaury.Tests", "tests\Amaury.Tests\Amaury.Tests.csproj", "{70769428-AAF8-4009-8DA3-E0F57BA3E204}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury.Tests", "tests\Amaury.Tests\Amaury.Tests.csproj", "{70769428-AAF8-4009-8DA3-E0F57BA3E204}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{F900915C-37CA-4166-9F42-748ED6484BC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F900915C-37CA-4166-9F42-748ED6484BC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F900915C-37CA-4166-9F42-748ED6484BC6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8DA33A64-A2D0-4F18-A0B0-ADBAF797D908}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8DA33A64-A2D0-4F18-A0B0-ADBAF797D908}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8DA33A64-A2D0-4F18-A0B0-ADBAF797D908}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8DA33A64-A2D0-4F18-A0B0-ADBAF797D908}.Release|Any CPU.Build.0 = Release|Any CPU
 		{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,7 +45,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F900915C-37CA-4166-9F42-748ED6484BC6} = {F4621A37-BAB1-4AC1-999B-87DDCB66D251}
-		{8DA33A64-A2D0-4F18-A0B0-ADBAF797D908} = {F4F63540-5FE8-4D88-BDFF-C3EF52F64876}
 		{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9} = {F4621A37-BAB1-4AC1-999B-87DDCB66D251}
 		{2FDF2841-938D-4CF9-8536-A1E4A5F07DFB} = {65A9D093-395E-4F3C-AE0E-DAA4DA6F273A}
 		{70769428-AAF8-4009-8DA3-E0F57BA3E204} = {65A9D093-395E-4F3C-AE0E-DAA4DA6F273A}
