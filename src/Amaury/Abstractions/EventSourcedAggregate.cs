@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Amaury.Abstractions
 {
@@ -11,7 +10,7 @@ namespace Amaury.Abstractions
         protected Queue<ICelebrityEvent> CommitedEvents { get; }
         protected Queue<ICelebrityEvent> PendingEvents { get; set; }
 
-        public virtual async Task<TEntity> Reduce(TEntity entity, string aggregatedId)
+        public virtual TEntity Reduce(TEntity entity, string aggregatedId)
         {
             var properties = typeof(TEntity).GetProperties();
 

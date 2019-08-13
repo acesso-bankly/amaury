@@ -16,7 +16,7 @@ namespace Amaury.Tests
         public EventSourcedAggregateTests() { }
 
         [Fact(DisplayName = "Deve reduzir os eventos para a entidade")]
-        public async Task ShouldReduceEventsToEntity()
+        public void ShouldReduceEventsToEntity()
         {
             var expectedAggregatedId = Guid.NewGuid().ToString();
             var events = new Queue<ICelebrityEvent>();
@@ -27,7 +27,7 @@ namespace Amaury.Tests
 
             var fooBar = new FooBar(events);
 
-            var reduced = await fooBar.Reduce(fooBar, expectedAggregatedId);
+            var reduced = fooBar.Reduce(fooBar, expectedAggregatedId);
 
             reduced.Should().NotBeEquivalentTo(fisrtEvent.Data);
             reduced.Should().BeEquivalentTo(secondEvent.Data);
