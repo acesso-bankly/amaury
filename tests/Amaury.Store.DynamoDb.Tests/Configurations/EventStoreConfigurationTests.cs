@@ -6,13 +6,22 @@ using Xunit;
 
 namespace Amaury.Store.DynamoDb.Tests.Configurations
 {
-    public class EventStoreConfigurationTests
+    public class EventStoreConfigurationTests : DynamoDbBaseTest
     {
-                [Fact(DisplayName = "Deve configurar a tabela do event store")]
+        private readonly IEventStoreConfiguration _configuration;
+
+        public EventStoreConfigurationTests()
+        {
+            _configuration = new EventStoreConfiguration(DynamoDb, Options);
+        }
+
+        [Fact(DisplayName = "Deve configurar a tabela do event store")]
         public async Task ShouldSettingAEventStoreTable()
         {
-          var result = true;
-          result.Should().BeTrue();
+
+
+            var result = await _configuration.TableExist(Options.StoreName);
+            result.Should().BeTrue();
         }
     }
 }
