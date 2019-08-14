@@ -11,6 +11,7 @@ mono: none
 env:
   - PACKAGE_VERSION="1.0.$TRAVIS_BUILD_NUMBER"
 script:
+ - sudo snap alias dotnet-sdk.dotnet dotnet
  - dotnet restore
  - dotnet build
  - dotnet pack --no-restore --no-build --include-symbols /p:PackageVersion=$PACKAGE_VERSION
