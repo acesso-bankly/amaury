@@ -18,4 +18,5 @@ script:
  - sudo snap alias dotnet-sdk.dotnet dotnet
  - dotnet restore
  - dotnet build
+ - dotnet test
  - dotnet pack --no-restore --no-build --include-symbols /p:PackageVersion=$PACKAGE_VERSION
