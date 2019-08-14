@@ -16,9 +16,6 @@ script:
  - sudo snap alias dotnet-sdk.dotnet dotnet
  - dotnet restore
  - dotnet build
- - docker run --name dynamo -d -p 8000:8000 -e AWS_ACCESS_KEY_ID='root' -e AWS_SECRET_ACCESS_KEY='secret' amazon/dynamodb-local
- - sleep 30
- - docker logs dynamo
  - curl http://localhost:8000/shell
  - dotnet test
  - dotnet pack --no-restore --no-build --include-symbols /p:PackageVersion=$PACKAGE_VERSION
