@@ -1,7 +1,7 @@
 language: csharp
 solution: Amaury.sln
 mono: none
-dotnet: 2.1.301
+dotnet: 3.0
 env:
   - PACKAGE_VERSION="1.0.$TRAVIS_BUILD_NUMBER"
 script:
