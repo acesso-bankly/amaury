@@ -13,7 +13,8 @@ env:
 services:
   - docker
 before_install:
-  - docker run -d -p 127.0.0.1:8000:8000 -e AWS_ACCESS_KEY_ID=root -e AWS_SECRET_ACCESS_KEY=secret amazon/dynamodb-local
+  - docker run -d -p 8000:8000 -e AWS_ACCESS_KEY_ID=root -e AWS_SECRET_ACCESS_KEY=secret amazon/dynamodb-local
+  - docker ps
 script:
  - sudo snap alias dotnet-sdk.dotnet dotnet
  - dotnet restore
