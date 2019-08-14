@@ -1,7 +1,13 @@
+dist: xenial
+addons:
+  snaps:
+  - name: dotnet-sdk
+    classic: true
+    channel: latest/beta
+sudo: required
 language: csharp
 solution: Amaury.sln
 mono: none
-dotnet: 3.0
 env:
   - PACKAGE_VERSION="1.0.$TRAVIS_BUILD_NUMBER"
 script:
