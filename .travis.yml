@@ -18,6 +18,5 @@ script:
  - dotnet build
  - docker run --name dynamo -d -p 8000:8000 -e AWS_ACCESS_KEY_ID='root' -e AWS_SECRET_ACCESS_KEY='secret' amazon/dynamodb-local
  - sleep 10
- - docker logs dynamo
- - dotnet test tests/Amaury.Store.DynamoDb.Tests/Amaury.Store.DynamoDb.Tests.csproj
+ - dotnet test
  - dotnet pack --no-restore --no-build --include-symbols /p:PackageVersion=$PACKAGE_VERSION
