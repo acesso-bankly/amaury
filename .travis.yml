@@ -20,7 +20,4 @@ script:
  - dotnet build -c Release
  - dotnet test
  - dotnet pack -c Release --no-restore --no-build --include-symbols /p:PackageVersion=$PACKAGE_VERSION
- - dotnet nuget push **/**/Amaury.$PACKAGE_VERSION.nupkg --api-key $ApiKey --source https://api.nuget.org/v3/index.json
- - dotnet nuget push **/**/Amaury.MediatR.$PACKAGE_VERSION.nupkg --api-key $ApiKey --source https://api.nuget.org/v3/index.json
- - dotnet nuget push **/**/Amaury.Store.DynamoDb.$PACKAGE_VERSION.nupkg --api-key $ApiKey --source https://api.nuget.org/v3/index.json
-
+ - dotnet nuget push **/**/Amaury.$PACKAGE_VERSION.nupkg -k $ApiKey -s https://api.nuget.org/v3/index.json
