@@ -16,32 +16,6 @@ namespace Amaury.Abstractions
         public Queue<ICelebrityEvent> CommittedEvents { get; }
         public Queue<ICelebrityEvent> PendingEvents { get; }
 
-        protected virtual TEntity Reduce(IReadOnlyCollection<ICelebrityEvent> events)
-        {
-            var entity = new TEntity();
-            var properties = typeof(TEntity).GetProperties();
-
-            foreach (var @event in events)
-            {
-                var data = @event.Data;
-                var propertyNames = data.GetType().GetProperties().Select(p => p.Name).ToArray();
-
-                foreach(var propertyName in propertyNames)
-                {
-                    var item = properties.FirstOrDefault(c => c.Name.Equals(propertyName));
-                    if(item is null) { continue; }
-
-                    if(item.CanRead && item.CanWrite)
-                    {
-                        var value = data.GetType().GetProperty(propertyName)?.GetValue(data, null);
-                        item.SetValue(entity, value);
-                    }
-                }
-            }
-
-            return entity;
-        }
-
         protected virtual void Append(ICelebrityEvent @event) => PendingEvents.Enqueue(@event);
     }
 }

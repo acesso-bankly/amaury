@@ -14,11 +14,11 @@ namespace Amaury.Tests.Fixtures
         public string Foo { get; private set; }
         public string Bar { get; private set; }
 
-        public FooBar GetState() => base.Reduce(CommittedEvents);
+        public FooBar GetState() => CommittedEvents.Reduce<FooBar>();
 
         public void RevertPropertyValues()
         {
-            var fooBar = Reduce(CommittedEvents);
+            var fooBar = CommittedEvents.Reduce<FooBar>();
             
             Id = fooBar.Id;
             Bar = fooBar.Foo;
