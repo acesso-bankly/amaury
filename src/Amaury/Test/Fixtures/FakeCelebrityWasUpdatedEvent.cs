@@ -3,12 +3,12 @@ using Amaury.Abstractions;
 
 namespace Amaury.Test.Fixtures
 {
-    public class FakeCelebrityEvent : ICelebrityEvent
+    public class FakeCelebrityWasUpdatedEvent : ICelebrityEvent
     {
-        public FakeCelebrityEvent(string aggregatedId, dynamic data)
+        public FakeCelebrityWasUpdatedEvent(string aggregatedId, dynamic data)
         {
             AggregatedId = aggregatedId;
-            Name = "FAKE_EVENT";
+            Name = "FAKE_CELEBRITY_WAS_UPDATED";
             EventId = Guid.NewGuid().ToString();
             Timestamp = DateTime.Now;
             Data = data;

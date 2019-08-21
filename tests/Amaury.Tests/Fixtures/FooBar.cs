@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Amaury.Abstractions;
 using Amaury.Test.Fixtures;
 
@@ -18,13 +19,14 @@ namespace Amaury.Tests.Fixtures
 
         public void RevertPropertyValues()
         {
-            var fooBar = CommittedEvents.Reduce<FooBar>();
+            var aux = Foo;
+            Foo = Bar;
+            Bar = aux;
             
-            Id = fooBar.Id;
-            Bar = fooBar.Foo;
-            Foo = fooBar.Bar;
-
-            Append(new FakeCelebrityEvent(Id, new { Id, Foo, Bar }));
+            Append(new FakeCelebrityWasUpdatedEvent(Id, new { Id, Foo, Bar }));
         }
+
+        public FooBar GetStateByEventName(string name) => CommittedEvents.Reduce<FooBar>(events => events.Where(e => e.Name.Equals(name)).ToList());
+        
     }
 }

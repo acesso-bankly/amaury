@@ -16,8 +16,8 @@ namespace Amaury.Tests
         {
             var expectedAggregatedId = Guid.NewGuid().ToString();
             var events = new Queue<ICelebrityEvent>();
-            var fisrtEvent = new FakeCelebrityEvent(expectedAggregatedId, new { Foo = "Bar", Bar = "Foo" });
-            var secondEvent = new FakeCelebrityEvent(expectedAggregatedId, new { Foo = "Foo", Bar = "Bar" });
+            var fisrtEvent = new FakeCelebrityWasCreatedEvent(expectedAggregatedId, new { Foo = "Bar", Bar = "Foo" });
+            var secondEvent = new FakeCelebrityWasCreatedEvent(expectedAggregatedId, new { Foo = "Foo", Bar = "Bar" });
             events.Enqueue(fisrtEvent);
             events.Enqueue(secondEvent);
 
@@ -39,15 +39,27 @@ namespace Amaury.Tests
             reduced.Should().BeEquivalentTo(new FooBar());
         }
 
+        [Fact(DisplayName = "Should reduce events to entity filter by event name")]
+        public void ShouldAppendEventToPpenddingEventsQueueA()
+        {
+            var fooBar = new FooBar();
+
+            fooBar.RevertPropertyValues();
+
+            var state = fooBar.GetStateByEventName("FAKE_CELEBRITY_WAS_CREATED");
+            
+            state.Should().BeEquivalentTo(new FooBar());
+        }
+
         [Fact(DisplayName = "Should append event to pending events queue")]
         public void ShouldAppendEventToPpenddingEventsQueue()
         {
             var expectedAggregatedId = Guid.NewGuid().ToString();
-            var fisrtEvent = new FakeCelebrityEvent(expectedAggregatedId, new { Id = expectedAggregatedId, Foo = "Bar", Bar = "Foo" });
+            var fisrtEvent = new FakeCelebrityWasCreatedEvent(expectedAggregatedId, new { Id = expectedAggregatedId, Foo = "Bar", Bar = "Foo" });
             var events = new Queue<ICelebrityEvent>();
             events.Enqueue(fisrtEvent);
 
-            var fooBar = new FooBar(events);
+            var fooBar = events.Reduce<FooBar>();
 
             fooBar.RevertPropertyValues();
 
