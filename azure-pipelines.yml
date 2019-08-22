@@ -72,12 +72,15 @@ stages:
           packDirectory: $(Build.ArtifactStagingDirectory)
           verbosityPack: 'minimal'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
+      - task: PublishPipelineArtifact@0
+        inputs:
+          artifactName: 'build-assets'
+          targetPath: '$(Build.ArtifactStagingDirectory)'
 
 - stage: Artifacts
   jobs:
     - job: Deploy
       displayName: Deploy Artifacts to Nuget.org
-      dependsOn: Build
       pool:
         vmImage: 'ubuntu-latest'
       timeoutInMinutes: 3
