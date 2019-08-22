@@ -26,6 +26,7 @@ steps:
 
 - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
   displayName: 'Set Assembly Manifest Data'
+  FileEncoding: 'utf-8'
   inputs:
     Authors: 'Acesso Tecnologia'
     Company: 'Acesso Soluções de Pagamentos S.A'
