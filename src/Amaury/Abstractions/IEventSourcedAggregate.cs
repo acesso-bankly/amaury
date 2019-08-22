@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Amaury.Abstractions
 {
     public interface IEventSourcedAggregate<out TEntity> : IAggregate where TEntity : class, new()
     {
-        Queue<ICelebrityEvent> CommittedEvents { get; }
-        Queue<ICelebrityEvent> PendingEvents { get; }
+        [JsonIgnore] Queue<ICelebrityEvent> PendingEvents { get; }
     }
 }

@@ -16,14 +16,12 @@ namespace Amaury.Tests
         {
             var expectedAggregatedId = Guid.NewGuid().ToString();
             var events = new Queue<ICelebrityEvent>();
-            var fisrtEvent = new FakeCelebrityEvent(expectedAggregatedId, new { Foo = "Bar", Bar = "Foo" });
-            var secondEvent = new FakeCelebrityEvent(expectedAggregatedId, new { Foo = "Foo", Bar = "Bar" });
+            var fisrtEvent = new FakeCelebrityWasCreatedEvent(expectedAggregatedId, new { Foo = "Bar", Bar = "Foo" });
+            var secondEvent = new FakeCelebrityWasCreatedEvent(expectedAggregatedId, new { Foo = "Foo", Bar = "Bar" });
             events.Enqueue(fisrtEvent);
             events.Enqueue(secondEvent);
 
-            var fooBar = new FooBar(events);
-
-            var reduced = fooBar.GetState();
+            var reduced = events.Reduce<FooBar>();
 
             reduced.Should().NotBeEquivalentTo(fisrtEvent.Data);
             reduced.Should().BeEquivalentTo(secondEvent.Data);
@@ -32,22 +30,33 @@ namespace Amaury.Tests
         [Fact(DisplayName = "Should reduce events to entity in your initial state when not exist committed events")]
         public void ShouldReduceEventsToEntityInYourInitialStateWhenNotExistCommitedEvents()
         {
-            var fooBar = new FooBar();
-
-            var reduced = fooBar.GetState();
+            var reduced = new Queue<ICelebrityEvent>().Reduce<FooBar>();
 
             reduced.Should().BeEquivalentTo(new FooBar());
+        }
+
+        [Fact(DisplayName = "Should reduce events to entity filter by condition")]
+        public void ShouldAppendEventToPpenddingEventsQueueA()
+        {
+            var fooBar = new FooBar("bar", "foo");
+
+            fooBar.RevertPropertyValues();
+
+            var state = fooBar.PendingEvents.Reduce<FooBar>(@event => @event.Name.Equals("FAKE_CELEBRITY_WAS_CREATED"));
+
+            state.Foo.Should().Be("bar");
+            state.Bar.Should().Be("foo");
         }
 
         [Fact(DisplayName = "Should append event to pending events queue")]
         public void ShouldAppendEventToPpenddingEventsQueue()
         {
             var expectedAggregatedId = Guid.NewGuid().ToString();
-            var fisrtEvent = new FakeCelebrityEvent(expectedAggregatedId, new { Id = expectedAggregatedId, Foo = "Bar", Bar = "Foo" });
+            var fisrtEvent = new FakeCelebrityWasCreatedEvent(expectedAggregatedId, new { Id = expectedAggregatedId, Foo = "Bar", Bar = "Foo" });
             var events = new Queue<ICelebrityEvent>();
             events.Enqueue(fisrtEvent);
 
-            var fooBar = new FooBar(events);
+            var fooBar = events.Reduce<FooBar>();
 
             fooBar.RevertPropertyValues();
 
