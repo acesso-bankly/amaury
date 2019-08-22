@@ -91,13 +91,13 @@ stages:
           targetPath: '$(Build.ArtifactStagingDirectory)'
 
 - stage: Artifacts
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
   jobs:
     - job: Deploy
       displayName: Deploy Artifacts to Nuget.org
       pool:
         vmImage: 'ubuntu-latest'
       timeoutInMinutes: 3
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
       steps:
       - checkout: none
       - task: DownloadPipelineArtifact@1
