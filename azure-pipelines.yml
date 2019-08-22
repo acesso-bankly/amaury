@@ -82,6 +82,13 @@ stages:
         vmImage: 'ubuntu-latest'
       timeoutInMinutes: 3
       steps:
+      - checkout: none
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'build-assets'
+          downloadPath: '$(System.ArtifactsDirectory)'
       - task: DotNetCoreCLI@2
         displayName: 'dotnet push'
         inputs:
