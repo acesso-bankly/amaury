@@ -31,9 +31,9 @@ namespace Amaury.Abstractions
             return entity;
         }
 
-        public static TEntity Reduce<TEntity>(this IEnumerable<ICelebrityEvent> self, Func<IReadOnlyCollection<ICelebrityEvent>, IReadOnlyCollection<ICelebrityEvent>> filter)where TEntity : class, new()
+        public static TEntity Reduce<TEntity>(this IEnumerable<ICelebrityEvent> self, Func<ICelebrityEvent, bool> filter) where TEntity : class, new()
         {
-            var events = filter.Invoke(new Queue<ICelebrityEvent>());
+            var events = self.Where(filter);
             return events.Reduce<TEntity>();
         }
     }

@@ -21,9 +21,7 @@ namespace Amaury.Tests
             events.Enqueue(fisrtEvent);
             events.Enqueue(secondEvent);
 
-            var fooBar = new FooBar(events);
-
-            var reduced = fooBar.GetState();
+            var reduced = events.Reduce<FooBar>();
 
             reduced.Should().NotBeEquivalentTo(fisrtEvent.Data);
             reduced.Should().BeEquivalentTo(secondEvent.Data);
@@ -32,23 +30,22 @@ namespace Amaury.Tests
         [Fact(DisplayName = "Should reduce events to entity in your initial state when not exist committed events")]
         public void ShouldReduceEventsToEntityInYourInitialStateWhenNotExistCommitedEvents()
         {
-            var fooBar = new FooBar();
-
-            var reduced = fooBar.GetState();
+            var reduced = new Queue<ICelebrityEvent>().Reduce<FooBar>();
 
             reduced.Should().BeEquivalentTo(new FooBar());
         }
 
-        [Fact(DisplayName = "Should reduce events to entity filter by event name")]
+        [Fact(DisplayName = "Should reduce events to entity filter by condition")]
         public void ShouldAppendEventToPpenddingEventsQueueA()
         {
-            var fooBar = new FooBar();
+            var fooBar = new FooBar("bar", "foo");
 
             fooBar.RevertPropertyValues();
 
-            var state = fooBar.GetStateByEventName("FAKE_CELEBRITY_WAS_CREATED");
-            
-            state.Should().BeEquivalentTo(new FooBar());
+            var state = fooBar.PendingEvents.Reduce<FooBar>(@event => @event.Name.Equals("FAKE_CELEBRITY_WAS_CREATED"));
+
+            state.Foo.Should().Be("bar");
+            state.Bar.Should().Be("foo");
         }
 
         [Fact(DisplayName = "Should append event to pending events queue")]
