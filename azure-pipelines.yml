@@ -72,4 +72,4 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     nuGetFeedType: external
     publishFeedCredentials: Nuget
-
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
