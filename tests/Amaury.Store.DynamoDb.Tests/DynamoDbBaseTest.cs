@@ -18,7 +18,7 @@ namespace Amaury.Store.DynamoDb.Tests
         {
             var amazonDynamoDbConfig = new AmazonDynamoDBConfig { ServiceURL = serviceUrl };
             DynamoDb = new AmazonDynamoDBClient(accessKey, secretKey, amazonDynamoDbConfig);
-            Options = new EventStoreOptions { StoreName = "fake_event_store" };
+            Options = new EventStoreOptions { StoreName = Guid.NewGuid().ToString() };
             var configurations = new EventStoreConfiguration(DynamoDb, Options);
             configurations.ConfigureAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             Context = new DynamoDBContext(DynamoDb);
