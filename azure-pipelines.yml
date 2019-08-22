@@ -23,6 +23,16 @@ trigger:
     - test/*
     - azure-pipelines.yml
 
+resources:
+  containers:
+  - container: dynamodb
+    image: amazon/dynamodb-local
+    ports:
+      - 8000:8000
+    env:
+      AWS_ACCESS_KEY_ID: root
+      AWS_SECRET_ACCESS_KEY: secret
+
 stages:
 - stage: Build
   jobs:
@@ -31,6 +41,8 @@ stages:
       pool:
         vmImage: 'ubuntu-latest'
       timeoutInMinutes: 10
+      services:
+        dynamodb: dynamodb
       steps:
       - task: richardfennellBM.BM-VSTS-Versioning-Task.Version-DotNetCoreAssemblies-Task.VersionDotNetCoreAssemblies@2
         displayName: 'Version .NET Core Assemblies'
