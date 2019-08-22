@@ -64,6 +64,7 @@ steps:
     arguments: '--no-build'
     packDirectory: $(Build.ArtifactStagingDirectory)
     verbosityPack: 'minimal'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet push'
