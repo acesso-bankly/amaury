@@ -24,32 +24,32 @@ namespace Amaury.Store.DynamoDb.Tests
             await CheckIfItemExist(expectedEvent);
         }
 
-        [Fact(DisplayName = "Deve adicionar o novo evento ao registro já existente")]
-        public async Task ShouldAppendTheNewEventToExistingRecord()
-        {
-            var expectedAggreagatedId = Guid.NewGuid().ToString();
-            var fisrtEvent = new FakeCelebrityWasCreatedEvent(expectedAggreagatedId, new { Foo = "Foo", Bar = "Bar" });
-            await _eventStore.Commit(fisrtEvent);
+        //[Fact(DisplayName = "Deve adicionar o novo evento ao registro já existente")]
+        //public async Task ShouldAppendTheNewEventToExistingRecord()
+        //{
+        //    var expectedAggreagatedId = Guid.NewGuid().ToString();
+        //    var fisrtEvent = new FakeCelebrityWasCreatedEvent(expectedAggreagatedId, new { Foo = "Foo", Bar = "Bar" });
+        //    await _eventStore.Commit(fisrtEvent);
 
-            var secondEvent = new FakeCelebrityWasCreatedEvent(expectedAggreagatedId, new { Foo = "Foo", Bar = "Bar" });
-            await _eventStore.Commit(secondEvent);
+        //    var secondEvent = new FakeCelebrityWasCreatedEvent(expectedAggreagatedId, new { Foo = "Foo", Bar = "Bar" });
+        //    await _eventStore.Commit(secondEvent);
 
-            await CheckIfItemExist(secondEvent);
-        }
+        //    await CheckIfItemExist(secondEvent);
+        //}
 
-        [Fact(DisplayName = "Deve retornar os eventos relacionados ao aggragated id")]
-        public async Task ShouldReturnEventsRelatedByAggregatedId()
-        {
-            var expectedAggreagatedId = Guid.NewGuid().ToString();
-            var fisrtEvent = new FakeCelebrityWasCreatedEvent(expectedAggreagatedId, new { Foo = "Foo", Bar = "Bar" });
-            await _eventStore.Commit(fisrtEvent);
+        //[Fact(DisplayName = "Deve retornar os eventos relacionados ao aggragated id")]
+        //public async Task ShouldReturnEventsRelatedByAggregatedId()
+        //{
+        //    var expectedAggreagatedId = Guid.NewGuid().ToString();
+        //    var fisrtEvent = new FakeCelebrityWasCreatedEvent(expectedAggreagatedId, new { Foo = "Foo", Bar = "Bar" });
+        //    await _eventStore.Commit(fisrtEvent);
 
-            var secondEvent = new FakeCelebrityWasCreatedEvent(expectedAggreagatedId, new { Foo = "Foo", Bar = "Bar" });
-            await _eventStore.Commit(secondEvent);
+        //    var secondEvent = new FakeCelebrityWasCreatedEvent(expectedAggreagatedId, new { Foo = "Foo", Bar = "Bar" });
+        //    await _eventStore.Commit(secondEvent);
 
-            var result = await _eventStore.Get(fisrtEvent.AggregatedId);
+        //    var result = await _eventStore.Get(fisrtEvent.AggregatedId);
 
-            result.Should().BeAssignableTo<IReadOnlyCollection<ICelebrityEvent>>();
-        }
+        //    result.Should().BeAssignableTo<IReadOnlyCollection<ICelebrityEvent>>();
+        //}
     }
 }
