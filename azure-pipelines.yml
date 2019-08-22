@@ -18,25 +18,6 @@ name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
 
 steps:
 
-- task: richardfennellBM.BM-VSTS-Versioning-Task.Version-DotNetCoreAssemblies-Task.VersionDotNetCoreAssemblies@2
-  displayName: 'Version .NET Core Assemblies'
-  inputs:
-    VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch))'
-    VersionRegex: '\d+\.\d+\.\d+'
-
-- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
-  displayName: 'Set Assembly Manifest Data'
-  inputs:
-    FileEncoding: 'utf-8'
-    Authors: 'Acesso Tecnologia'
-    Company: 'Acesso Soluções de Pagamentos S.A'
-    Copyright: 'Copyright © $(date:yyyy) Acesso Soluções de Pagamentos S.A'
-    PackageLicenseUrl: 'https://github.com/acessocard/amaury/blob/master/LICENSE'
-    PackageProjectUrl: 'https://github.com/acessocard/amaury'
-    RepositoryUrl: 'https://github.com/acessocard/amaury'
-    RepositoryType: GitHub
-    PackageTags: 'dotnet; dotnet core; event sourcing; event driven; domain event'
-
 - task: DotNetCoreCLI@2
   displayName: Restore
   inputs:
