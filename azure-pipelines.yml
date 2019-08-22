@@ -85,7 +85,6 @@ stages:
           arguments: '--no-build'
           packDirectory: $(Build.ArtifactStagingDirectory)
           verbosityPack: 'minimal'
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: 'build-assets'
@@ -98,6 +97,7 @@ stages:
       pool:
         vmImage: 'ubuntu-latest'
       timeoutInMinutes: 3
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
       steps:
       - checkout: none
       - task: DownloadPipelineArtifact@1
