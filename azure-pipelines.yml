@@ -91,7 +91,7 @@ stages:
           targetPath: '$(Build.ArtifactStagingDirectory)'
 
 - stage: Artifacts
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
+  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'master'))
   jobs:
     - job: Deploy
       displayName: Deploy Artifacts to Nuget.org
