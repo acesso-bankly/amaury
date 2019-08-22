@@ -16,42 +16,71 @@ variables:
 
 name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
 
-steps:
+stages:
+- stage: Build
+  jobs:
+    - job: Build
+      displayName: Build Artifacts
+      pool:
+        vmImage: 'ubuntu-latest'
+      timeoutInMinutes: 10
+      steps:
+      - task: richardfennellBM.BM-VSTS-Versioning-Task.Version-DotNetCoreAssemblies-Task.VersionDotNetCoreAssemblies@2
+        displayName: 'Version .NET Core Assemblies'
+        inputs:
+          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch))'
+          VersionRegex: '\d+\.\d+\.\d+'
+      - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
+        displayName: 'Set Assembly Manifest Data'
+        inputs:
+          Authors: 'Acesso Tecnologia'
+          Company: 'Acesso Soluções de Pagamentos S.A'
+          Copyright: 'Copyright © $(date:yyyy) Acesso Soluções de Pagamentos S.A'
+          PackageLicenseUrl: 'https://github.com/acessocard/amaury/blob/master/LICENSE'
+          PackageProjectUrl: 'https://github.com/acessocard/amaury'
+          RepositoryUrl: 'https://github.com/acessocard/amaury'
+          RepositoryType: GitHub
+          PackageTags: 'dotnet; dotnet core; event sourcing; event driven; domain event'
+      - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: '**/*.csproj'
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          projects: '**/*.csproj'
+          arguments: '--configuration $(BuildConfiguration)'
+      - task: DotNetCoreCLI@2
+        displayName: Test
+        inputs:
+          command: test
+          projects: '**/*[Tt]est*/*.csproj'
+          arguments: '--configuration $(BuildConfiguration)'
+      - task: DotNetCoreCLI@2
+        displayName: 'dotnet pack'
+        inputs:
+          command: pack
+          projects: '**/*.csproj'
+          arguments: '--no-build'
+          packDirectory: $(Build.ArtifactStagingDirectory)
+          verbosityPack: 'minimal'
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
 
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: '**/*.csproj'
-
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    projects: '**/*.csproj'
-    arguments: '--configuration $(BuildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  displayName: Test
-  inputs:
-    command: test
-    projects: '**/*[Tt]est*/*.csproj'
-    arguments: '--configuration $(BuildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet pack'
-  inputs:
-    command: pack
-    projects: '**/*.csproj'
-    arguments: '--no-build'
-    packDirectory: $(Build.ArtifactStagingDirectory)
-    verbosityPack: 'minimal'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
-
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet push'
-  inputs:
-    command: push
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-    nuGetFeedType: external
-    publishFeedCredentials: Nuget
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
+- stage: Artifacts
+  jobs:
+    - job: Deploy
+      displayName: Deploy Artifacts to Nuget.org
+      dependsOn: Build
+      pool:
+        vmImage: 'ubuntu-latest'
+      timeoutInMinutes: 3
+      steps:
+      - task: DotNetCoreCLI@2
+        displayName: 'dotnet push'
+        inputs:
+          command: push
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+          nuGetFeedType: external
+          publishFeedCredentials: Nuget
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
