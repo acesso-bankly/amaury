@@ -1,0 +1,115 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+variables:
+  MajorVersion: 1
+  MinorVersion: 0
+  Patch: 0
+  BuildConfiguration: Release
+
+name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
+
+trigger:
+  branches:
+    include:
+    - master
+    - develop
+    - feature/*
+  paths:
+    include:
+    - src/*
+    - test/*
+    - azure-pipelines.yml
+
+resources:
+  containers:
+  - container: dynamodb
+    image: amazon/dynamodb-local
+    ports:
+      - 8000:8000
+    env:
+      AWS_ACCESS_KEY_ID: root
+      AWS_SECRET_ACCESS_KEY: secret
+
+stages:
+- stage: Build
+  jobs:
+    - job: Build
+      displayName: Build Artifacts
+      pool:
+        vmImage: 'ubuntu-latest'
+      timeoutInMinutes: 10
+      services:
+        dynamodb: dynamodb
+      steps:
+      - task: richardfennellBM.BM-VSTS-Versioning-Task.Version-DotNetCoreAssemblies-Task.VersionDotNetCoreAssemblies@2
+        displayName: 'Version .NET Core Assemblies'
+        inputs:
+          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch))'
+          VersionRegex: '\d+\.\d+\.\d+'
+      - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
+        displayName: 'Set Assembly Manifest Data'
+        inputs:
+          FileEncoding: 'utf-8'
+          Authors: 'Acesso Tecnologia'
+          Company: 'Acesso Soluções de Pagamentos S.A'
+          Copyright: 'Copyright © $(date:yyyy) Acesso Soluções de Pagamentos S.A'
+          PackageLicenseUrl: 'https://github.com/acessocard/amaury/blob/master/LICENSE'
+          PackageProjectUrl: 'https://github.com/acessocard/amaury'
+          RepositoryUrl: 'https://github.com/acessocard/amaury'
+          RepositoryType: GitHub
+          PackageTags: 'dotnet; dotnet core; event sourcing; event driven; domain event'
+      - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: '**/*.csproj'
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          projects: '**/*.csproj'
+          arguments: '--configuration $(BuildConfiguration)'
+      - task: DotNetCoreCLI@2
+        displayName: Test
+        inputs:
+          command: test
+          projects: '**/*[Tt]est*/*.csproj'
+          arguments: '--configuration $(BuildConfiguration)'
+      - task: DotNetCoreCLI@2
+        displayName: 'dotnet pack'
+        inputs:
+          command: pack
+          projects: '**/*.csproj'
+          arguments: '--no-build'
+          packDirectory: $(Build.ArtifactStagingDirectory)
+          verbosityPack: 'minimal'
+      - task: PublishPipelineArtifact@0
+        inputs:
+          artifactName: 'build-assets'
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+
+- stage: Artifacts
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'master'))
+  jobs:
+    - job: Deploy
+      displayName: Deploy Artifacts to Nuget.org
+      pool:
+        vmImage: 'ubuntu-latest'
+      timeoutInMinutes: 3
+      steps:
+      - checkout: none
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'build-assets'
+          downloadPath: '$(System.ArtifactsDirectory)'
+      - task: DotNetCoreCLI@2
+        displayName: 'dotnet push'
+        inputs:
+          command: push
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+          nuGetFeedType: external
+          publishFeedCredentials: Nuget
