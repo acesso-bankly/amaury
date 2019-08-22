@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Amaury.Abstractions.Persistence;
 using Amaury.Store.DynamoDb.Configurations;
@@ -12,6 +13,7 @@ namespace Amaury.Store.DynamoDb.Tests.Configurations
 
         public EventStoreConfigurationTests()
         {
+            Options.StoreName = Guid.NewGuid().ToString();
             _configuration = new EventStoreConfiguration(DynamoDb, Options);
         }
 
