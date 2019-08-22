@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Amaury.Abstractions;
 using Amaury.Test.Fixtures;
 
@@ -8,11 +6,9 @@ namespace Amaury.Tests.Fixtures
 {
     public sealed class FooBar : EventSourcedAggregate<FooBar>
     {
-        public FooBar(Queue<ICelebrityEvent> commitedEvents) : base(commitedEvents) { }
+        public FooBar() { }
 
-        public FooBar() : this(new Queue<ICelebrityEvent>()) { }
-
-        public FooBar(string foo, string bar) : this(new Queue<ICelebrityEvent>())
+        public FooBar(string foo, string bar)
         {
             Id = Guid.NewGuid().ToString();
             Foo = foo;
