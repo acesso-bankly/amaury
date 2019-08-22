@@ -3,18 +3,24 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-trigger:
-- master
-
-pool:
-  vmImage: 'ubuntu-latest'
-
 variables:
   MajorVersion: 1
   MinorVersion: 0
   Patch: 0
 
 name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
+
+trigger:
+  branches:
+    include:
+    - master
+    - develop
+    - feature/*
+  paths:
+    include:
+    - src/*
+    - test/*
+    - azure-pipelines.yml
 
 stages:
 - stage: Build
