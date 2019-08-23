@@ -80,7 +80,7 @@ stages:
           
       - task: DotNetCoreCLI@2
         displayName: 'dotnet pack release'
-        condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           command: pack
           projects: '**/*.csproj'
@@ -104,7 +104,6 @@ stages:
           majorVersion: '$(MajorVersion)'
           minorVersion: '$(MinorVersion)'
           patchVersion: '$(Patch)'
-        enabled: false
 
       - task: PublishPipelineArtifact@0
         inputs:
