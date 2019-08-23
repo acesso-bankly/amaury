@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Event Store implementation in AWS DynamoDb to Amaury</Description>
+    <Copyright>Copyright © 2019 Acesso Soluções de Pagamentos S.A</Copyright>
+    <Authors>Acesso Tecnologia</Authors>
+    <AssemblyName>Amaury.Store.DynamoDb</AssemblyName>
+    <PackageId>Amaury.Store.DynamoDb</PackageId>
+    <PackageTags>event store;event sourcing;event driven;domain event;dynamodb</PackageTags>
+    <PackageProjectUrl>https://github.com/acessocard/amaury</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/acessocard/amaury/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/acessocard/amaury</RepositoryUrl>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>

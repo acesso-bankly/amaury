@@ -1,7 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>MediatR Extension to raise domain events in .NET</Description>
+    <Copyright>Copyright © 2019 Acesso Soluções de Pagamentos S.A</Copyright>
+    <Authors>Acesso Tecnologia</Authors>
+    <AssemblyName>Amaury.MediatR</AssemblyName>
+    <PackageId>Amaury.MediatR</PackageId>
+    <PackageTags>event sourcing;event driven;domain event;notification;mediator;meditr</PackageTags>
+    <PackageProjectUrl>https://github.com/acessocard/amaury</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/acessocard/amaury/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/acessocard/amaury</RepositoryUrl>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
