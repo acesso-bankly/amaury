@@ -82,6 +82,7 @@ stages:
         inputs:
           command: pack
           projects: '**/*.csproj'
+          includesymbols: true
           arguments: '--no-build'
           packDirectory: $(Build.ArtifactStagingDirectory)
           verbosityPack: 'minimal'
@@ -90,8 +91,8 @@ stages:
           artifactName: 'build-assets'
           targetPath: '$(Build.ArtifactStagingDirectory)'
 
-- stage: InternalFeed
-  displayName: Publish to Internal Feed
+- stage: PreRelease
+  displayName: Publish to External Feed
   jobs:
     - job: Deploy
       displayName: Deploy Artifacts to Nuget.org
@@ -106,15 +107,16 @@ stages:
           downloadType: 'single'
           artifactName: 'build-assets'
           downloadPath: '$(System.ArtifactsDirectory)'
-      - task: DotNetCoreCLI@2
+      - task: NuGetCommand@2
+        displayName: 'push nuget'
         inputs:
           command: 'push'
           arguments: -p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)
-          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-          nuGetFeedType: 'internal'
-          publishVstsFeed: '344866e8-37b6-4751-8509-3cf63af8609e'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'MyGet'
 
-- stage: ExternalFeed
+- stage: Release
   displayName: Publish to External Feed
   condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'master'))
   jobs:
