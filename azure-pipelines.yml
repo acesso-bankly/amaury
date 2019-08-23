@@ -44,6 +44,25 @@ stages:
       services:
         dynamodb: dynamodb
       steps:
+      - task: DotNetCoreCLI@2
+        displayName: Restore
+        inputs:
+          command: restore
+          projects: '**/*.csproj'
+
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          projects: '**/*.csproj'
+          arguments: '--configuration $(BuildConfiguration)'
+
+      - task: DotNetCoreCLI@2
+        displayName: Test
+        inputs:
+          command: test
+          projects: '**/*[Tt]est*/*.csproj'
+          arguments: '--configuration $(BuildConfiguration)'
+
       - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
         displayName: 'Set Assembly Manifest Data'
         inputs:
@@ -56,22 +75,8 @@ stages:
           RepositoryUrl: 'https://github.com/acessocard/amaury'
           RepositoryType: GitHub
           PackageTags: 'dotnet; dotnet core; event sourcing; event driven; domain event'
-      - task: DotNetCoreCLI@2
-        displayName: Restore
-        inputs:
-          command: restore
-          projects: '**/*.csproj'
-      - task: DotNetCoreCLI@2
-        displayName: Build
-        inputs:
-          projects: '**/*.csproj'
-          arguments: '--configuration $(BuildConfiguration)'
-      - task: DotNetCoreCLI@2
-        displayName: Test
-        inputs:
-          command: test
-          projects: '**/*[Tt]est*/*.csproj'
-          arguments: '--configuration $(BuildConfiguration)'
+          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch).$(Build.BuildId)'
+          
       - task: DotNetCoreCLI@2
         displayName: 'dotnet pack'
         inputs:
