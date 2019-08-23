@@ -92,7 +92,7 @@ stages:
           targetPath: '$(Build.ArtifactStagingDirectory)'
 
 - stage: PreRelease
-  displayName: Publish to External Feed
+  displayName: Publish pre released artifacts
   jobs:
     - job: Deploy
       displayName: Deploy Artifacts to Nuget.org
@@ -117,7 +117,7 @@ stages:
           publishFeedCredentials: 'MyGet'
 
 - stage: Release
-  displayName: Publish to External Feed
+  displayName: Publish released artifacts
   condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'master'))
   jobs:
     - job: Deploy
