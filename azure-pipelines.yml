@@ -86,8 +86,8 @@ stages:
           includesymbols: true
           packDirectory: $(Build.ArtifactStagingDirectory)
           verbosityPack: 'minimal'
-          majorVersion: '$(Major)'
-          minorVersion: '$(Minor)'
+          majorVersion: '$(MajorVersion)'
+          minorVersion: '$(MinorVersion)'
           patchVersion: '$(Patch)'
       
       - task: DotNetCoreCLI@2
@@ -102,8 +102,8 @@ stages:
           packDirectory: $(Build.ArtifactStagingDirectory)
           verbosityPack: 'minimal'   
           versioningScheme: byPrereleaseNumber
-          majorVersion: '$(Major)'
-          minorVersion: '$(Minor)'
+          majorVersion: '$(MajorVersion)'
+          minorVersion: '$(MinorVersion)'
           patchVersion: '$(Patch)'
 
       - task: PublishPipelineArtifact@0
