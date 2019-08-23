@@ -6,7 +6,7 @@
 variables:
   MajorVersion: 1
   MinorVersion: 0
-  Patch: 0
+  Patch: 1
   BuildConfiguration: Release
 
 name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
@@ -44,11 +44,25 @@ stages:
       services:
         dynamodb: dynamodb
       steps:
-      - task: richardfennellBM.BM-VSTS-Versioning-Task.Version-DotNetCoreAssemblies-Task.VersionDotNetCoreAssemblies@2
-        displayName: 'Version .NET Core Assemblies'
+      - task: DotNetCoreCLI@2
+        displayName: Restore
         inputs:
-          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch)'
-          VersionRegex: '\d+\.\d+\.\d+'
+          command: restore
+          projects: '**/*.csproj'
+
+      - task: DotNetCoreCLI@2
+        displayName: Build
+        inputs:
+          projects: '**/*.csproj'
+          arguments: '--configuration $(BuildConfiguration)'
+
+      - task: DotNetCoreCLI@2
+        displayName: Test
+        inputs:
+          command: test
+          projects: '**/*[Tt]est*/*.csproj'
+          arguments: '--configuration $(BuildConfiguration)'
+
       - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
         displayName: 'Set Assembly Manifest Data'
         inputs:
@@ -61,31 +75,37 @@ stages:
           RepositoryUrl: 'https://github.com/acessocard/amaury'
           RepositoryType: GitHub
           PackageTags: 'dotnet; dotnet core; event sourcing; event driven; domain event'
+          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch).$(Build.BuildId)'
+          
       - task: DotNetCoreCLI@2
-        displayName: Restore
-        inputs:
-          command: restore
-          projects: '**/*.csproj'
-      - task: DotNetCoreCLI@2
-        displayName: Build
-        inputs:
-          projects: '**/*.csproj'
-          arguments: '--configuration $(BuildConfiguration)'
-      - task: DotNetCoreCLI@2
-        displayName: Test
-        inputs:
-          command: test
-          projects: '**/*[Tt]est*/*.csproj'
-          arguments: '--configuration $(BuildConfiguration)'
-      - task: DotNetCoreCLI@2
-        displayName: 'dotnet pack'
+        displayName: 'dotnet pack release'
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           command: pack
           projects: '**/*.csproj'
           includesymbols: true
-          arguments: '--no-build'
           packDirectory: $(Build.ArtifactStagingDirectory)
           verbosityPack: 'minimal'
+          majorVersion: '$(MajorVersion)'
+          minorVersion: '$(MinorVersion)'
+          patchVersion: '$(Patch)'
+      
+      - task: DotNetCoreCLI@2
+        displayName: 'dotnet pack pre-release'
+        condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
+        inputs:
+          command: 'pack'
+          packagesToPack: '**/*.csproj'
+          nobuild: true
+          includesymbols: true
+          includesource: true
+          packDirectory: $(Build.ArtifactStagingDirectory)
+          verbosityPack: 'minimal'   
+          versioningScheme: byPrereleaseNumber
+          majorVersion: '$(MajorVersion)'
+          minorVersion: '$(MinorVersion)'
+          patchVersion: '$(Patch)'
+
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: 'build-assets'
@@ -111,14 +131,13 @@ stages:
         displayName: 'push nuget'
         inputs:
           command: 'push'
-          arguments: -p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)
           packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
           nuGetFeedType: 'external'
           publishFeedCredentials: 'MyGet'
 
 - stage: Release
   displayName: Publish released artifacts
-  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   jobs:
     - job: Deploy
       displayName: Deploy Artifacts to Nuget.org
