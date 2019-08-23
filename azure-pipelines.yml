@@ -7,6 +7,7 @@ variables:
   MajorVersion: 1
   MinorVersion: 0
   Patch: 1
+  PackageVersion: 1.0.1
   BuildConfiguration: Release
 
 name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
@@ -86,11 +87,8 @@ stages:
           includesymbols: true
           packDirectory: $(Build.ArtifactStagingDirectory)
           verbosityPack: 'minimal'
-          versioningScheme: 'off'
-          majorVersion: '$(MajorVersion)'
-          minorVersion: '$(MinorVersion)'
-          patchVersion: '$(Patch)'
-      
+          versionEnvVar: '$(PackageVersion)'
+
       - task: DotNetCoreCLI@2
         displayName: 'dotnet pack pre-release'
         condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
