@@ -18,7 +18,10 @@ namespace Amaury.Store.DynamoDb
         public DynamoDbEventStore(IAmazonDynamoDB dynamoDb, EventStoreOptions options)
         {
             _context = new DynamoDBContext(dynamoDb);
-            _configuration = new DynamoDBOperationConfig(){ OverrideTableName = options.StoreName };
+            _configuration = new DynamoDBOperationConfig(){
+                OverrideTableName = options.StoreName,
+                Conversion = DynamoDBEntryConversion.V2
+            };
         }
 
         public async Task Commit<TEvent>(TEvent @event) where TEvent : ICelebrityEvent
