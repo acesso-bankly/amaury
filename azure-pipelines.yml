@@ -79,13 +79,27 @@ stages:
           
       - task: DotNetCoreCLI@2
         displayName: 'dotnet pack'
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           command: pack
           projects: '**/*.csproj'
           includesymbols: true
-          arguments: '--no-build'
+          arguments: '-p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)'
           packDirectory: $(Build.ArtifactStagingDirectory)
           verbosityPack: 'minimal'
+      
+      - task: DotNetCoreCLI@2
+        condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
+        inputs:
+          command: 'pack'
+          packagesToPack: '**/*.csproj'
+          nobuild: true
+          includesymbols: true
+          includesource: true
+          arguments: '-p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)'
+          packDirectory: $(Build.ArtifactStagingDirectory)
+          verbosityPack: 'minimal'
+
       - task: PublishPipelineArtifact@0
         inputs:
           artifactName: 'build-assets'
@@ -111,14 +125,13 @@ stages:
         displayName: 'push nuget'
         inputs:
           command: 'push'
-          arguments: -p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)
           packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
           nuGetFeedType: 'external'
           publishFeedCredentials: 'MyGet'
 
 - stage: Release
   displayName: Publish released artifacts
-  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   jobs:
     - job: Deploy
       displayName: Deploy Artifacts to Nuget.org
