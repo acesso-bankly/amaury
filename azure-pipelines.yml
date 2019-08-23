@@ -44,18 +44,6 @@ stages:
       services:
         dynamodb: dynamodb
       steps:
-      - task: richardfennellBM.BM-VSTS-Versioning-Task.Version-DotNetCoreAssemblies-Task.VersionDotNetCoreAssemblies@2
-        displayName: 'Version .NET Core Assemblies'
-        inputs:
-          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)'
-          VersionRegex: '\d+\.\d+\.\d+-alpha.\d+'
-      - task: richardfennellBM.BM-VSTS-Versioning-Task.Version-DotNetCoreAssemblies-Task.VersionDotNetCoreAssemblies@2
-        condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'master'))
-        displayName: 'Version .NET Core Assemblies'
-        inputs:
-          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch)'
-          VersionRegex: '\d+\.\d+\.\d+'
-
       - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
         displayName: 'Set Assembly Manifest Data'
         inputs:
