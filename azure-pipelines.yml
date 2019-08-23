@@ -47,7 +47,7 @@ stages:
       - task: richardfennellBM.BM-VSTS-Versioning-Task.Version-DotNetCoreAssemblies-Task.VersionDotNetCoreAssemblies@2
         displayName: 'Version .NET Core Assemblies'
         inputs:
-          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch))'
+          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch)'
           VersionRegex: '\d+\.\d+\.\d+'
       - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
         displayName: 'Set Assembly Manifest Data'
@@ -90,7 +90,8 @@ stages:
           artifactName: 'build-assets'
           targetPath: '$(Build.ArtifactStagingDirectory)'
 
-- stage: Artifacts
+- stage: ExternalFeed
+  displayName: Publish to External Feed
   condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'master'))
   jobs:
     - job: Deploy
@@ -113,3 +114,27 @@ stages:
           packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
           nuGetFeedType: 'external'
           publishFeedCredentials: 'Nuget'
+
+- stage: InternalFeed
+  displayName: Publish to Internal Feed
+  jobs:
+    - job: Deploy
+      displayName: Deploy Artifacts to Nuget.org
+      pool:
+        vmImage: 'ubuntu-latest'
+      timeoutInMinutes: 3
+      steps:
+      - checkout: none
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'build-assets'
+          downloadPath: '$(System.ArtifactsDirectory)'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'push'
+          arguments: -p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: '344866e8-37b6-4751-8509-3cf63af8609e'
