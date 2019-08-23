@@ -6,7 +6,7 @@
 variables:
   MajorVersion: 1
   MinorVersion: 0
-  Patch: 0
+  Patch: 1
   BuildConfiguration: Release
 
 name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
@@ -47,8 +47,15 @@ stages:
       - task: richardfennellBM.BM-VSTS-Versioning-Task.Version-DotNetCoreAssemblies-Task.VersionDotNetCoreAssemblies@2
         displayName: 'Version .NET Core Assemblies'
         inputs:
+          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)'
+          VersionRegex: '\d+\.\d+\.\d+-alpha.\d+'
+      - task: richardfennellBM.BM-VSTS-Versioning-Task.Version-DotNetCoreAssemblies-Task.VersionDotNetCoreAssemblies@2
+        condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'master'))
+        displayName: 'Version .NET Core Assemblies'
+        inputs:
           VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch)'
           VersionRegex: '\d+\.\d+\.\d+'
+
       - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
         displayName: 'Set Assembly Manifest Data'
         inputs:
@@ -109,7 +116,7 @@ stages:
       - task: DotNetCoreCLI@2
         inputs:
           command: 'push'
-          arguments: -p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)
+          arguments: '-p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)'
           packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
           nuGetFeedType: 'internal'
           publishVstsFeed: '344866e8-37b6-4751-8509-3cf63af8609e'
