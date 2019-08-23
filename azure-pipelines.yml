@@ -78,17 +78,20 @@ stages:
           VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch).$(Build.BuildId)'
           
       - task: DotNetCoreCLI@2
-        displayName: 'dotnet pack'
+        displayName: 'dotnet pack release'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           command: pack
           projects: '**/*.csproj'
           includesymbols: true
-          arguments: '-p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)'
           packDirectory: $(Build.ArtifactStagingDirectory)
           verbosityPack: 'minimal'
+          majorVersion: '$(Major)'
+          minorVersion: '$(Minor)'
+          patchVersion: '$(Patch)'
       
       - task: DotNetCoreCLI@2
+        displayName: 'dotnet pack pre-release'
         condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           command: 'pack'
@@ -96,9 +99,12 @@ stages:
           nobuild: true
           includesymbols: true
           includesource: true
-          arguments: '-p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)'
           packDirectory: $(Build.ArtifactStagingDirectory)
-          verbosityPack: 'minimal'
+          verbosityPack: 'minimal'   
+          versioningScheme: byPrereleaseNumber
+          majorVersion: '$(Major)'
+          minorVersion: '$(Minor)'
+          patchVersion: '$(Patch)'
 
       - task: PublishPipelineArtifact@0
         inputs:
