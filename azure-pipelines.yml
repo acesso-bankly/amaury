@@ -63,21 +63,7 @@ stages:
           command: test
           projects: '**/*[Tt]est*/*.csproj'
           arguments: '--configuration $(BuildConfiguration)'
-
-      - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
-        displayName: 'Set Assembly Manifest Data'
-        inputs:
-          FileEncoding: 'utf-8'
-          Authors: 'Acesso Tecnologia'
-          Company: 'Acesso Soluções de Pagamentos S.A'
-          Copyright: 'Copyright © $(date:yyyy) Acesso Soluções de Pagamentos S.A'
-          PackageLicenseUrl: 'https://github.com/acessocard/amaury/blob/master/LICENSE'
-          PackageProjectUrl: 'https://github.com/acessocard/amaury'
-          RepositoryUrl: 'https://github.com/acessocard/amaury'
-          RepositoryType: GitHub
-          PackageTags: 'dotnet; dotnet core; event sourcing; event driven; domain event'
-          VersionNumber: '$(MajorVersion).$(MinorVersion).$(Patch).$(Build.BuildId)'
-          
+    
       - task: DotNetCoreCLI@2
         displayName: 'dotnet pack release'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
