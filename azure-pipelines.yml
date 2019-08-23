@@ -90,6 +90,30 @@ stages:
           artifactName: 'build-assets'
           targetPath: '$(Build.ArtifactStagingDirectory)'
 
+- stage: InternalFeed
+  displayName: Publish to Internal Feed
+  jobs:
+    - job: Deploy
+      displayName: Deploy Artifacts to Nuget.org
+      pool:
+        vmImage: 'ubuntu-latest'
+      timeoutInMinutes: 3
+      steps:
+      - checkout: none
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'build-assets'
+          downloadPath: '$(System.ArtifactsDirectory)'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'push'
+          arguments: -p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+          nuGetFeedType: 'internal'
+          publishVstsFeed: '344866e8-37b6-4751-8509-3cf63af8609e'
+
 - stage: ExternalFeed
   displayName: Publish to External Feed
   condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'master'))
@@ -114,27 +138,3 @@ stages:
           packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
           nuGetFeedType: 'external'
           publishFeedCredentials: 'Nuget'
-
-- stage: InternalFeed
-  displayName: Publish to Internal Feed
-  jobs:
-    - job: Deploy
-      displayName: Deploy Artifacts to Nuget.org
-      pool:
-        vmImage: 'ubuntu-latest'
-      timeoutInMinutes: 3
-      steps:
-      - checkout: none
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          buildType: 'current'
-          downloadType: 'single'
-          artifactName: 'build-assets'
-          downloadPath: '$(System.ArtifactsDirectory)'
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'push'
-          arguments: -p:PackageVersion=$(MajorVersion).$(MinorVersion).$(Patch)-alpha.$(Build.BuildId)
-          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-          nuGetFeedType: 'internal'
-          publishVstsFeed: '344866e8-37b6-4751-8509-3cf63af8609e'
