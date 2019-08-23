@@ -106,10 +106,10 @@ stages:
           downloadType: 'single'
           artifactName: 'build-assets'
           downloadPath: '$(System.ArtifactsDirectory)'
-      - task: DotNetCoreCLI@2
-        displayName: 'dotnet push'
+      - task: NuGetCommand@2
+        displayName: 'push nuget'
         inputs:
-          command: push
-          packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-          nuGetFeedType: external
-          publishFeedCredentials: Nuget
+          command: 'push'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'Nuget'
