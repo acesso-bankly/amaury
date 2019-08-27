@@ -1,7 +1,9 @@
+using System;
+
 namespace Amaury.Abstractions
 {
     public interface ICorrelated
     {
-        string CorrelationId { get; set; }
+        Guid CorrelationId { get; set; }
     }
 }
