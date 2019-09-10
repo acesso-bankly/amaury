@@ -4,7 +4,7 @@ using Amaury.Test.Fixtures;
 
 namespace Amaury.Tests.Fixtures
 {
-    public sealed class FooBar : EventSourcedAggregate<FooBar>
+    public sealed class FooBar : CelebrityEntity<FooBar>
     {
         public FooBar() { }
 
