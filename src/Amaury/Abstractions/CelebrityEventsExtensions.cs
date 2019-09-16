@@ -13,7 +13,7 @@ namespace Amaury.Abstractions
 
             foreach(var @event in self)
             {
-                var data = @event.Data;
+                object data = @event.Data;
                 var propertyNames = data.GetType().GetProperties().Select(p => p.Name).ToArray();
 
                 foreach(var propertyName in propertyNames)
