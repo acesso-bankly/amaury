@@ -20,5 +20,18 @@ namespace Amaury.Store.DynamoDb.Configurations
             services.AddAsyncInitializer<EventStoreInitializer>();
             services.AddSingleton<ICelebrityEventStore, DynamoDbEventStore>();
         }
+
+        public static void AddEventStore(this IServiceCollection services, IAmazonDynamoDB clientAmazonDynamoDB, Action<EventStoreOptions> configure = null)
+        {
+            var options = new EventStoreOptions();
+            configure?.Invoke(options);
+
+            services.AddSingleton(options);
+
+            services.AddSingleton<IAmazonDynamoDB>(clientAmazonDynamoDB);
+            services.AddSingleton<IEventStoreConfiguration, EventStoreConfiguration>();
+            services.AddAsyncInitializer<EventStoreInitializer>();
+            services.AddSingleton<ICelebrityEventStore, DynamoDbEventStore>();
+        }
     }
 }
