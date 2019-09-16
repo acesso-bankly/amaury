@@ -62,7 +62,9 @@ namespace Amaury.Tests
 
             var pendingEvent = fooBar.PendingEvents.Should().HaveCount(1).And.Subject.First();
             pendingEvent.AggregatedId.Should().Be(expectedAggregatedId);
-            pendingEvent.Data.Should().Be(new { Id = expectedAggregatedId, Foo = "Foo", Bar = "Bar" });
+
+            object data = pendingEvent.Data;
+            data.Should().Be(new { Id = expectedAggregatedId, Foo = "Foo", Bar = "Bar" });
         }
     }
 }
