@@ -28,9 +28,14 @@ namespace Amaury.Store.DynamoDb
         {
             var model = await _context.LoadAsync<EventStoreModel>(@event.AggregatedId, _configuration) ?? new EventStoreModel();
 
+            var config = new JsonSerializerSettings
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
+            };
+
             model.AggregatedId = @event.AggregatedId;
             model.Timestamp = @event.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss.fffffff");
-            model.Events.Add(JsonConvert.SerializeObject(@event));
+            model.Events.Add(JsonConvert.SerializeObject(@event, config));
 
             await _context.SaveAsync(model, _configuration);
         }
