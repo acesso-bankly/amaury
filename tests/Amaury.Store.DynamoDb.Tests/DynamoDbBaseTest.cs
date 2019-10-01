@@ -30,7 +30,7 @@ namespace Amaury.Store.DynamoDb.Tests
 
         protected async Task CheckIfItemExist(ICelebrityEvent @event)
         {
-            var model = await Context.LoadAsync<EventStoreModel>(@event.Id, new DynamoDBOperationConfig { OverrideTableName = Options.StoreName });
+            var model = await Context.LoadAsync<EventStoreModel>(@event.AggregatedId, new DynamoDBOperationConfig { OverrideTableName = Options.StoreName });
 
             model.Should().NotBeNull();
             model.Events.Should().Contain(JsonConvert.SerializeObject(@event));

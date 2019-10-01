@@ -63,7 +63,7 @@ namespace Amaury.Tests
             fooBar.RevertPropertyValues();
 
             var pendingEvent = fooBar.PendingEvents.Should().HaveCount(1).And.Subject.First();
-            pendingEvent.Id.Should().Be(expectedAggregatedId);
+            pendingEvent.AggregatedId.Should().Be(expectedAggregatedId);
 
             var data = pendingEvent.Data;
             data.Should().Be(new { Id = expectedAggregatedId, Foo = "Foo", Bar = "Bar" });

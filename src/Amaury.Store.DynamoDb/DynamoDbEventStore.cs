@@ -26,14 +26,14 @@ namespace Amaury.Store.DynamoDb
 
         public async Task Commit<TEvent>(TEvent @event) where TEvent : ICelebrityEvent
         {
-            var model = await _context.LoadAsync<EventStoreModel>(@event.Id, _configuration) ?? new EventStoreModel();
+            var model = await _context.LoadAsync<EventStoreModel>(@event.AggregatedId, _configuration) ?? new EventStoreModel();
 
             var config = new JsonSerializerSettings
             {
                 PreserveReferencesHandling = PreserveReferencesHandling.Objects
             };
 
-            model.AggregatedId = @event.Id;
+            model.AggregatedId = @event.AggregatedId;
             model.Timestamp = @event.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss.fffffff");
             model.Events.Add(JsonConvert.SerializeObject(@event, config));
 
