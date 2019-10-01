@@ -6,7 +6,7 @@ namespace Amaury.MediatR
 {
     public static class NotifiableCelebrityEventsBusExtensions
     {
-        public static void AddCelebrityEventsBus(this IServiceCollection services, System.Reflection.Assembly[] assemblies)
+        public static void AddCelebrityEventsBus(this IServiceCollection services, params System.Reflection.Assembly[] assemblies)
         {
             services.AddMediatR(assemblies);
             services.AddTransient<INotifiableCelebrityEventsBus, NotifiableCelebrityEventsBus>();
