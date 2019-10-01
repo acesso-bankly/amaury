@@ -5,7 +5,7 @@ namespace Amaury.Test.Fixtures
 {
     public class FakeCelebrityWasCreatedEvent : ICelebrityEvent
     {
-        public FakeCelebrityWasCreatedEvent(string aggregatedId, dynamic data)
+        public FakeCelebrityWasCreatedEvent(string aggregatedId, object data)
         {
             AggregatedId = aggregatedId;
             Name = "FAKE_CELEBRITY_WAS_CREATED";
@@ -22,6 +22,6 @@ namespace Amaury.Test.Fixtures
 
         public DateTime Timestamp { get; set; }
 
-        public dynamic Data { get; set; }
+        public object Data { get; set; }
     }
 }

@@ -7,6 +7,6 @@ namespace Amaury.Abstractions
         string EventId { get; set; }
         string Name { get; set; }
         DateTime Timestamp { get; set; }
-        dynamic Data { get; set; }
+        object Data { get; set; }
     }
 }

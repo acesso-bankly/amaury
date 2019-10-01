@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Amaury.Abstractions;
+using Amaury.MediatR;
 using Amaury.Test.Fixtures;
 using Amaury.Tests.Fixtures;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Amaury.Tests
@@ -42,10 +44,10 @@ namespace Amaury.Tests
 
             fooBar.RevertPropertyValues();
 
-            var state = fooBar.PendingEvents.Reduce<FooBar>(@event => @event.Name.Equals("FAKE_CELEBRITY_WAS_CREATED"));
+            var state = fooBar.PendingEvents.Reduce<FooBar>((a, b) => b);
 
-            state.Foo.Should().Be("bar");
-            state.Bar.Should().Be("foo");
+            state.Foo.Should().Be("foo");
+            state.Bar.Should().Be("bar");
         }
 
         [Fact(DisplayName = "Should append event to pending events queue")]
@@ -63,7 +65,7 @@ namespace Amaury.Tests
             var pendingEvent = fooBar.PendingEvents.Should().HaveCount(1).And.Subject.First();
             pendingEvent.AggregatedId.Should().Be(expectedAggregatedId);
 
-            object data = pendingEvent.Data;
+            var data = pendingEvent.Data;
             data.Should().Be(new { Id = expectedAggregatedId, Foo = "Foo", Bar = "Bar" });
         }
     }
