@@ -2,6 +2,6 @@ namespace Amaury.Abstractions
 {
     public interface IAggregated
     {
-        string AggregatedId { get; set; }
+        string Id { get; }
     }
 }

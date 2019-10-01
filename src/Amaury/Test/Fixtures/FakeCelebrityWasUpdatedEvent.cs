@@ -7,14 +7,14 @@ namespace Amaury.Test.Fixtures
     {
         public FakeCelebrityWasUpdatedEvent(string aggregatedId, dynamic data)
         {
-            AggregatedId = aggregatedId;
+            Id = aggregatedId;
             Name = "FAKE_CELEBRITY_WAS_UPDATED";
             EventId = Guid.NewGuid().ToString();
             Timestamp = DateTime.Now;
             Data = data;
         }
 
-        public string AggregatedId { get;set; }
+        public string Id { get;set; }
 
         public string EventId { get;set; }
 

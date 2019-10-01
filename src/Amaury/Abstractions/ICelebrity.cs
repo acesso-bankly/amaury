@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Amaury.Abstractions
 {
-    public interface ICelebrity<out TEntity> : IAggregate where TEntity : class, new()
+    public interface ICelebrity<out TEntity> : IAggregated where TEntity : class, new()
     {
         [JsonIgnore] Queue<ICelebrityEvent> PendingEvents { get; }
     }

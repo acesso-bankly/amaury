@@ -31,7 +31,7 @@ namespace Amaury.MediatR.Tests
 
             await _eventsBus.RaiseEvent(expectedEvent);
 
-            await _eventStore.Received().Commit(Arg.Is<INotifiableCelebrityEvent>(e => e.AggregatedId == expectedEvent.AggregatedId));
+            await _eventStore.Received().Commit(Arg.Is<INotifiableCelebrityEvent>(e => e.Id == expectedEvent.Id));
         }
 
 
@@ -42,7 +42,7 @@ namespace Amaury.MediatR.Tests
 
             await _eventsBus.RaiseEvent(expectedEvent);
 
-            await _mediator.Received().Publish(Arg.Is<INotifiableCelebrityEvent>(e => e.AggregatedId == expectedEvent.AggregatedId));
+            await _mediator.Received().Publish(Arg.Is<INotifiableCelebrityEvent>(e => e.Id == expectedEvent.Id));
         }
 
         [Fact(DisplayName = "Dado que exita uma lista de eventos, então, deve lançar todos os eventos da lista")]
@@ -55,8 +55,8 @@ namespace Amaury.MediatR.Tests
 
             await _eventsBus.RaiseEvents(events);
 
-            await _eventStore.Received(events.Count).Commit(Arg.Is<INotifiableCelebrityEvent>(e => e.AggregatedId == expectedAggregatedId));
-            await _mediator.Received(events.Count).Publish(Arg.Is<INotifiableCelebrityEvent>(e => e.AggregatedId == expectedAggregatedId));
+            await _eventStore.Received(events.Count).Commit(Arg.Is<INotifiableCelebrityEvent>(e => e.Id == expectedAggregatedId));
+            await _mediator.Received(events.Count).Publish(Arg.Is<INotifiableCelebrityEvent>(e => e.Id == expectedAggregatedId));
         }
 
         [Fact(DisplayName = "Dado que exita uma lista de eventos, então, deve retornar uma lista de eventos para o aggregated id")]
