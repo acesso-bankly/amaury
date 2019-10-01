@@ -9,7 +9,7 @@ namespace Amaury.MediatR
         public static void AddCelebrityEventsBus(this IServiceCollection services, System.Reflection.Assembly[] assemblies)
         {
             services.AddMediatR(assemblies);
-            services.AddCelebrityBus<NotifiableCelebrityEventsBus>();
+            services.AddTransient<INotifiableCelebrityEventsBus, NotifiableCelebrityEventsBus>();
         }
     }
 }
