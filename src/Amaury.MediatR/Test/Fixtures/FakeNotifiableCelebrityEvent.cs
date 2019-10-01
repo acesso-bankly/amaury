@@ -6,14 +6,14 @@ namespace Amaury.MediatR.Test.Fixtures
     {
         public FakeNotifiableCelebrityEvent(string aggregatedId, dynamic data)
         {
-            Id = aggregatedId;
+            AggregatedId = aggregatedId;
             Name = "FAKE_EVENT";
             EventId = Guid.NewGuid().ToString();
             Timestamp = DateTime.Now;
             Data = data;
         }
 
-        public string Id { get;set; }
+        public string AggregatedId { get; set; }
 
         public string EventId { get;set; }
 

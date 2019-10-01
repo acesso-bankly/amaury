@@ -7,14 +7,14 @@ namespace Amaury.Test.Fixtures
     {
         public FakeCelebrityWasCreatedEvent(string aggregatedId, object data)
         {
-            Id = aggregatedId;
+            AggregatedId = aggregatedId;
             Name = "FAKE_CELEBRITY_WAS_CREATED";
             EventId = Guid.NewGuid().ToString();
             Timestamp = DateTime.Now;
             Data = data;
         }
 
-        public string Id { get; set; }
+        public string AggregatedId { get; set; }
 
         public string EventId { get; set; }
 
@@ -23,5 +23,6 @@ namespace Amaury.Test.Fixtures
         public DateTime Timestamp { get; set; }
 
         public object Data { get; set; }
+
     }
 }
