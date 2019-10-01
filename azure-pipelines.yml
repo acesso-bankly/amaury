@@ -6,8 +6,8 @@
 variables:
   MajorVersion: 1
   MinorVersion: 1
-  Patch: 1
-  PackageVersion: 1.1.1
+  Patch: 2
+  PackageVersion: 1.1.2
   BuildConfiguration: Release
 
 name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
