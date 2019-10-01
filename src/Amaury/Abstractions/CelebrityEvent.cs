@@ -7,7 +7,7 @@ namespace Amaury.Abstractions
     {
         protected CelebrityEvent(string aggregatedId, object data)
         {
-            AggregatedId = aggregatedId;
+            Id = aggregatedId;
             Data = data;
 
             Name = GetType().GetEventName();
@@ -15,7 +15,7 @@ namespace Amaury.Abstractions
             EventId = Guid.NewGuid().ToString();
         }
 
-        public string AggregatedId { get; set; }
+        public string Id { get; set; }
         public object Data { get; set; }
         public string Name { get; set; }
         public string EventId { get; set; }
