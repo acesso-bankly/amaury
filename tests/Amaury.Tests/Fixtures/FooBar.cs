@@ -8,6 +8,11 @@ namespace Amaury.Tests.Fixtures
     public sealed class FooBar : ICelebrity<FooBar>
     {
         public FooBar() => PendingEvents = new Queue<ICelebrityEvent>();
+        public FooBar(string id)
+        {
+            Id = id;
+            PendingEvents = new Queue<ICelebrityEvent>();
+        }
 
         public FooBar(string foo, string bar)
         {
@@ -18,8 +23,9 @@ namespace Amaury.Tests.Fixtures
             PendingEvents.Enqueue(new FakeCelebrityWasCreatedEvent(Id, new { Id, Foo, Bar }));
         }
 
-        public string Foo { get; private set; }
-        public string Bar { get; private set; }
+        public string Foo { get; set; }
+        public string Bar { get; set; }
+        public string Zoo { get; }
 
         public void RevertPropertyValues()
         {
