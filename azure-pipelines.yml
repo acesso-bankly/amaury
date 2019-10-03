@@ -6,8 +6,8 @@
 variables:
   MajorVersion: 1
   MinorVersion: 2
-  Patch: 5
-  PackageVersion: 1.2.5
+  Patch: 6
+  PackageVersion: 1.2.6
   BuildConfiguration: Release
 
 name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
@@ -121,7 +121,7 @@ stages:
           downloadType: 'single'
           artifactName: 'build-assets'
           downloadPath: '$(System.ArtifactsDirectory)'
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
         displayName: 'push nuget'
         inputs:
           command: 'push'
@@ -146,7 +146,7 @@ stages:
           downloadType: 'single'
           artifactName: 'build-assets'
           downloadPath: '$(System.ArtifactsDirectory)'
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
         displayName: 'push nuget'
         inputs:
           command: 'push'
