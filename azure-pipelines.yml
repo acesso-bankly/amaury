@@ -146,7 +146,7 @@ stages:
           downloadType: 'single'
           artifactName: 'build-assets'
           downloadPath: '$(System.ArtifactsDirectory)'
-      - task: DotNetCoreCLI@2
+      - task: NuGetCommand@2
         displayName: 'push nuget'
         inputs:
           command: 'push'
