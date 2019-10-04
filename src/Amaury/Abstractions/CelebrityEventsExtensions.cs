@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Amaury.Abstractions
 {
@@ -19,7 +20,7 @@ namespace Amaury.Abstractions
             foreach(var @event in self)
             {
                 var obj = (object)@event.Data;
-                entity = obj.MapReadableAndwritableProperties<TEntity>();
+                entity = obj.GetState<TEntity>();
             }
             return entity;
         }
@@ -68,7 +69,7 @@ namespace Amaury.Abstractions
             return state;
         }
 
-        private static TEntity MapReadableAndwritableProperties<TEntity>(this object state) where TEntity : class, new()
+        public static TEntity GetState<TEntity>(this object state) where TEntity : class, new()
         {
             var entity = new TEntity();
             var properties = typeof(TEntity).GetProperties();
