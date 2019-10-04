@@ -120,5 +120,16 @@ namespace Amaury.Tests
             var exception = Assert.Throws<InvalidOperationException>(() => events.Reduce<FooBar>());
             exception.Message.Should().Be($"The property \"Zoo\" can not be readable and writable");
         }
+
+        [Fact(DisplayName = "Should get state from event")]
+        public void ShouldGetStateFromEvent()
+        {
+            var @event = new FakeCelebrityWasCreatedEvent(Guid.NewGuid().ToString(), new { Foo = "Foo", Bar = "Bar" });
+
+            var state = @event.Data.GetState<FooBar>();
+
+            state.Foo.Should().Be("Foo");
+            state.Bar.Should().Be("Bar");
+        }
     }
 }
