@@ -6,8 +6,8 @@
 variables:
   MajorVersion: 1
   MinorVersion: 2
-  Patch: 7
-  PackageVersion: 1.2.7
+  Patch: 8
+  PackageVersion: 1.2.8
   BuildConfiguration: Release
 
 name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
@@ -79,7 +79,7 @@ stages:
         inputs:
           command: pack
           projects: '**/*.csproj'
-          includesymbols: true
+          includesymbols: false
           packDirectory: $(Build.ArtifactStagingDirectory)
           verbosityPack: 'minimal'
           versionEnvVar: '$(PackageVersion)'
@@ -150,6 +150,6 @@ stages:
         displayName: 'push nuget'
         inputs:
           command: 'push'
-          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg;!$(Build.ArtifactStagingDirectory)/*.symbols.nupkg'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
           nuGetFeedType: 'external'
           publishFeedCredentials: 'Nuget'
