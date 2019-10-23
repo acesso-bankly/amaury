@@ -42,9 +42,10 @@ namespace Amaury.Store.DynamoDb
 
         public async Task<IReadOnlyCollection<ICelebrityEvent>> Get(string aggregatedId)
         {
-            var events = new List<ICelebrityEvent>();
-
             var model = await _context.LoadAsync<EventStoreModel>(aggregatedId, _configuration);
+            if (model is null) return new List<ICelebrityEvent>();
+
+            var events = new List<ICelebrityEvent>();
 
             foreach(var item in model.Events)
             {
