@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amaury.Abstractions;
@@ -40,6 +41,7 @@ namespace Amaury.Store.DynamoDb
             await _context.SaveAsync(model, _configuration);
         }
 
+        [Obsolete("Method Get is obsolete, use GetFromEventStore instead")]
         public async Task<IReadOnlyCollection<ICelebrityEvent>> Get(string aggregatedId)
         {
             var model = await _context.LoadAsync<EventStoreModel>(aggregatedId, _configuration);
@@ -48,6 +50,22 @@ namespace Amaury.Store.DynamoDb
             var events = new List<ICelebrityEvent>();
 
             foreach(var item in model.Events)
+            {
+                var @event = JsonConvert.DeserializeObject<EventModel>(item);
+                events.Add(@event);
+            }
+
+            return events;
+        }
+
+        public async Task<IReadOnlyCollection<ICelebrityEvent>> GetFromEventStore(string aggregatedId)
+        {
+            var eventStoreModel = await _context.LoadAsync<EventStoreModel>(aggregatedId, _configuration);
+            if(eventStoreModel is null) return new List<ICelebrityEvent>();
+
+            var events = new List<ICelebrityEvent>();
+
+            foreach(var item in eventStoreModel.Events)
             {
                 var @event = JsonConvert.DeserializeObject<EventModel>(item);
                 events.Add(@event);
