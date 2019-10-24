@@ -9,7 +9,7 @@ namespace Amaury.Abstractions.Persistence
         Task Commit<TEvent>(TEvent @event) where TEvent : ICelebrityEvent;
         Task<IReadOnlyCollection<ICelebrityEvent>> GetEventsBy(string aggregatedId);
 
-        [Obsolete("Method Get is obsolete, use GetFromEventStore instead")]
+        [Obsolete("Method Get is obsolete, use GetEventsBy instead")]
         Task<IReadOnlyCollection<ICelebrityEvent>> Get(string aggregatedId);
 
     }

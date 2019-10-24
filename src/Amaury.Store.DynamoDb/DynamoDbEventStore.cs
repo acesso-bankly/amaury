@@ -41,7 +41,7 @@ namespace Amaury.Store.DynamoDb
             await _context.SaveAsync(model, _configuration);
         }
 
-        [Obsolete("Method Get is obsolete, use GetFromEventStore instead")]
+        [Obsolete("Method Get is obsolete, use GetEventsBy instead")]
         public async Task<IReadOnlyCollection<ICelebrityEvent>> Get(string aggregatedId)
         {
             var model = await _context.LoadAsync<EventStoreModel>(aggregatedId, _configuration);
