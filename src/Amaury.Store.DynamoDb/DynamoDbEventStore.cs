@@ -58,7 +58,7 @@ namespace Amaury.Store.DynamoDb
             return events;
         }
 
-        public async Task<IReadOnlyCollection<ICelebrityEvent>> GetFromEventStore(string aggregatedId)
+        public async Task<IReadOnlyCollection<ICelebrityEvent>> GetEventsBy(string aggregatedId)
         {
             var eventStoreModel = await _context.LoadAsync<EventStoreModel>(aggregatedId, _configuration);
             if(eventStoreModel is null) return new List<ICelebrityEvent>();

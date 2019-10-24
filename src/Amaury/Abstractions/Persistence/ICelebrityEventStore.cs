@@ -7,7 +7,7 @@ namespace Amaury.Abstractions.Persistence
     public interface ICelebrityEventStore
     {
         Task Commit<TEvent>(TEvent @event) where TEvent : ICelebrityEvent;
-        Task<IReadOnlyCollection<ICelebrityEvent>> GetFromEventStore(string aggregatedId);
+        Task<IReadOnlyCollection<ICelebrityEvent>> GetEventsBy(string aggregatedId);
 
         [Obsolete("Method Get is obsolete, use GetFromEventStore instead")]
         Task<IReadOnlyCollection<ICelebrityEvent>> Get(string aggregatedId);
