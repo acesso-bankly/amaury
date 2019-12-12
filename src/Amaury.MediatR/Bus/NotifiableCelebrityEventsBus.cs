@@ -34,6 +34,6 @@ namespace Amaury.MediatR.Bus
 
         public Task Commit<TEvent>(TEvent @event) where TEvent : ICelebrityEvent => _eventStore.Commit(@event);
 
-        public async Task<IReadOnlyCollection<ICelebrityEvent>> Get(string aggregatedId) => await _eventStore.Get(aggregatedId);
+        public async Task<IReadOnlyCollection<ICelebrityEvent>> Get(string aggregatedId) => await _eventStore.GetEvents(aggregatedId);
     }
 }
