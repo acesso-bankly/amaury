@@ -4,11 +4,11 @@ namespace Amaury.V2.Abstractions
 {
     public abstract class CelebrityEventBase
     {
-        public CelebrityEventBase() => Created = DateTime.UtcNow;
+        public CelebrityEventBase() => Timestamp = DateTime.UtcNow;
 
         public string AggregateId { get; protected set; }
         public long AggregateVersion { get; protected set; }
-        public DateTime Created { get; protected set; }
+        public DateTime Timestamp { get; protected set; }
 
         public abstract string Name { get; }
 
@@ -17,12 +17,11 @@ namespace Amaury.V2.Abstractions
 
         public void SetAggregateVersion(long aggregateVersion)
         {
-            if(aggregateVersion <= 0) throw new ArgumentOutOfRangeException(nameof(aggregateVersion));
+            if(aggregateVersion < 0) throw new ArgumentOutOfRangeException(nameof(aggregateVersion));
 
             AggregateVersion = aggregateVersion;
         }
 
-        public void SetCreated(DateTime created)
-            => Created = created;
+        public void SetTimestamp(DateTime timestamp) => Timestamp = timestamp;
     }
 }
