@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Newtonsoft.Json;
 
 namespace Amaury.V2.Abstractions
 {
@@ -8,11 +8,9 @@ namespace Amaury.V2.Abstractions
     {
         private readonly ICollection<CelebrityEventBase> _uncommittedEvents = new LinkedList<CelebrityEventBase>();
 
-        public CelebrityAggregateBase() => Version = 0;
-
-        public string Id { get; protected set; }
-        public DateTime CreatedAt { get; protected set; }
-        public DateTime? UpdatedAt { get; protected set; }
+        public string Id => GetAggregateId();
+        [JsonProperty] public DateTime CreatedAt { get; protected set; }
+        [JsonProperty] public DateTime? UpdatedAt { get; protected set; }
 
         public long Version { get; protected set; }
 
@@ -36,6 +34,14 @@ namespace Amaury.V2.Abstractions
             ApplyEvent(@event);
         }
 
-        protected void UpVersion() => Version += 1;
+        protected void UpVersion() => SetVersion(Version + 1);
+
+        public void SetVersion(long version)
+        {
+            if(version < Version) throw new ArgumentOutOfRangeException();
+            Version = version;
+        }
+
+        public abstract string GetAggregateId();
     }
 }
