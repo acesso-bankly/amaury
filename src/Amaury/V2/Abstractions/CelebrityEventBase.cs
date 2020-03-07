@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace Amaury.V2.Abstractions
 {
@@ -6,11 +7,11 @@ namespace Amaury.V2.Abstractions
     {
         public CelebrityEventBase() => Timestamp = DateTime.UtcNow;
 
-        public string AggregateId { get; protected set; }
-        public long AggregateVersion { get; protected set; }
-        public DateTime Timestamp { get; protected set; }
+        [JsonIgnore] public string AggregateId { get; protected set; }
+        [JsonIgnore] public long AggregateVersion { get; protected set; }
+        [JsonIgnore] public DateTime Timestamp { get; protected set; }
 
-        public abstract string Name { get; }
+        [JsonIgnore] public abstract string Name { get; }
 
         public void SetAggregateId(string aggregateId)
             => AggregateId = aggregateId ?? throw new ArgumentNullException(nameof(aggregateId));
