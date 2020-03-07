@@ -13,21 +13,15 @@ namespace Amaury.Store.DynamoDb.V2.Models
         {
             AggregateId = eventBase.AggregateId;
             AggregateVersion = eventBase.AggregateVersion;
-            Created = eventBase.Created;
+            Timestamp = eventBase.Timestamp;
             Name = eventBase.Name;
             Data = JsonConvert.SerializeObject(eventBase);
         }
 
         public string AggregateId { get;set; }
-        
-        public string Name { get;set; }
-
-        public int? Version { get;set; }
-
         public long AggregateVersion { get;set; }
-
-        public DateTime Created { get;set; }
-
+        public string Name { get;set; }
+        public DateTime Timestamp { get;set; }
         public string Data { get;set; }
     }
 }
