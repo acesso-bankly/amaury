@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Amaury.Store.DynamoDb.V2.Configurations;
 using Amaury.Store.DynamoDb.V2.Models;
 using Amaury.V2.Abstractions;
 using Amaury.V2.Persistence;
+using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 
 namespace Amaury.Store.DynamoDb.V2
 {
@@ -13,45 +17,82 @@ namespace Amaury.Store.DynamoDb.V2
     {
         private readonly IDynamoDBContext _dbContext;
         private readonly ICelebrityEventFactory _eventFactory;
+        private readonly DynamoDBOperationConfig _configuration;
 
-        public DynamoDbCelebrityEventStore(IDynamoDBContext dbContext, ICelebrityEventFactory eventFactory)
+        public DynamoDbCelebrityEventStore(IDynamoDBContext dbContext, ICelebrityEventFactory eventFactory, EventStoreOptions options)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _eventFactory = eventFactory ?? throw new ArgumentNullException(nameof(eventFactory));
-        }
-
-        public async Task CommitEventsAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken)
-        {
-            var batchWrite = _dbContext.CreateBatchWrite<DynamoDbEventModel>();
-            var cardEvents = ParseCardEventData(events);
-            batchWrite.AddPutItems(cardEvents);
-            await batchWrite.ExecuteAsync(cancellationToken);
-        }
-    
-        public async Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, CancellationToken cancellationToken)
-        {
-            var query = _dbContext.QueryAsync<DynamoDbEventModel>(aggregateId);
-            var eventModels = await query.GetNextSetAsync(cancellationToken); // TODO Ver para percorrer lista até o fim
-            var listEvents = new List<CelebrityEventBase>();
-
-            foreach(var eventModel in eventModels)
+            _configuration = new DynamoDBOperationConfig()
             {
-                var @event = _eventFactory.GetEvent(eventModel.Name, eventModel.Data);
-
-                //TODO rever formar para retirar este trecho de código
-                @event.SetAggregateId(eventModel.AggregateId);
-                @event.SetAggregateVersion(eventModel.AggregateVersion);
-                @event.SetCreated(eventModel.Created);
-
-                listEvents.Add(@event);
-            }
-
-            return listEvents;
+                OverrideTableName = options.StoreName,
+                Conversion = DynamoDBEntryConversion.V2
+            };
         }
 
-        private IEnumerable<DynamoDbEventModel> ParseCardEventData(IEnumerable<CelebrityEventBase> events)
+        public async Task CommitBatchAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken = default)
         {
-            foreach(var @event in events) yield return new DynamoDbEventModel(@event);
+            var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
+            var writer = table.CreateBatchWrite();
+
+            var celebrityEventBases = events.ToList();
+
+            foreach (var document in celebrityEventBases.Select(@event => _dbContext.ToDocument(@event))) { writer.AddDocumentToPut(document); }
+
+            await writer.ExecuteAsync(cancellationToken);
+        }
+
+        public async Task CommitAsync(CelebrityEventBase @event, CancellationToken cancellationToken = default)
+        {
+            var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
+            var document = _dbContext.ToDocument(@event);
+
+            var data = @event.AggregateVersion == 0 ? null : await table.GetItemAsync(@event.AggregateId, @event.AggregateVersion - 1, cancellationToken);
+
+            await table.PutItemAsync(document, new PutItemOperationConfig { Expected = data }, cancellationToken);
+        }
+
+        public async Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, CancellationToken cancellationToken = default)
+        {
+            var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
+
+            var search = table.Query(new QueryOperationConfig
+            {
+                KeyExpression = new Expression
+                {
+                    ExpressionStatement = "#aggregate_id = :v_aggregate_id and #aggregate_version >= :v_aggregate_version",
+                    ExpressionAttributeNames = new Dictionary<string, string>
+                    {
+                        { "#aggregate_id", "AggregateId" },
+                        { "#aggregate_version", "AggregateVersion" }
+                    },
+                    ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry>
+                    {
+                        { ":v_aggregate_id", aggregateId },
+                        { ":v_aggregate_version", version ?? 0 }
+                    }
+                },
+                Limit = 10
+            });
+
+            var items = await search.GetNextSetAsync(cancellationToken);
+            var documents = _dbContext.FromDocuments<DynamoDbEventModel>(items);
+
+            return ParseToCelebrityEvents(documents);
+        }
+
+        private IEnumerable<CelebrityEventBase> ParseToCelebrityEvents(IEnumerable<DynamoDbEventModel> documents)
+            => documents.Select(ParseToCelebrityEventBase);
+
+        private CelebrityEventBase ParseToCelebrityEventBase(IEventStoreModel document)
+        {
+            var @event = _eventFactory.GetEvent(document.Name, document.Data);
+
+            //TODO rever formar para retirar este trecho de código
+            @event.SetAggregateId(document.AggregateId);
+            @event.SetAggregateVersion(document.AggregateVersion);
+            @event.SetTimestamp(document.Timestamp);
+            return @event;
         }
     }
 }
