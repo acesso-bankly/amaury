@@ -7,7 +7,8 @@ namespace Amaury.V2.Persistence
 {
     public interface ICelebrityEventStore
     {
-        Task CommitEventsAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken);
-        Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, CancellationToken cancellationToken);
+        Task CommitBatchAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken = default);
+        Task CommitAsync(CelebrityEventBase @event, CancellationToken cancellationToken = default);
+        Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, CancellationToken cancellationToken = default);
     }
 }
