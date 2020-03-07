@@ -19,15 +19,18 @@ namespace Amaury.Store.DynamoDb.V2
         private readonly ICelebrityEventFactory _eventFactory;
         private readonly DynamoDBOperationConfig _configuration;
 
-        public DynamoDbCelebrityEventStore(IDynamoDBContext dbContext, ICelebrityEventFactory eventFactory, DynamoEventStoreOptions options)
+        public DynamoDbCelebrityEventStore(IAmazonDynamoDB client, ICelebrityEventFactory eventFactory, DynamoEventStoreOptions options)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            if(client is null) throw new ArgumentNullException(nameof(client));
             _eventFactory = eventFactory ?? throw new ArgumentNullException(nameof(eventFactory));
-            _configuration = new DynamoDBOperationConfig()
+
+            _configuration = new DynamoDBOperationConfig
             {
                 OverrideTableName = options.StoreName,
                 Conversion = DynamoDBEntryConversion.V2
             };
+
+            _dbContext = new DynamoDBContext(client);
         }
 
         public async Task CommitBatchAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken = default)

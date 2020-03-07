@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using Amaury.V2.Persistence;
 using Amazon.DynamoDBv2;
 using Microsoft.Extensions.DependencyInjection;
-using ICelebrityEventStore = Amaury.Abstractions.Persistence.ICelebrityEventStore;
 
 namespace Amaury.Store.DynamoDb.V2.Configurations
 {
@@ -19,7 +18,13 @@ namespace Amaury.Store.DynamoDb.V2.Configurations
             services.AddAWSService<IAmazonDynamoDB>(options);
             services.AddSingleton<ICelebrityEventStoreConfiguration, DynamoDbEventStoreConfiguration>();
             services.AddAsyncInitializer<DynamoDbEventStoreInitializer>();
-            services.AddSingleton<ICelebrityEventStore, DynamoDbEventStore>();
+            services.AddSingleton<ICelebrityEventStore, DynamoDbCelebrityEventStore>();
+        }
+
+        public static void AddCelebrityEventFactory<TFactory>(this IServiceCollection services) where TFactory : ICelebrityEventFactory, new()
+        {
+            var factory = new TFactory();
+            services.AddSingleton<ICelebrityEventFactory>(_ => factory);
         }
 
         public static void AddEventStore(this IServiceCollection services, IAmazonDynamoDB client, Action<DynamoEventStoreOptions> configure = null)
@@ -31,7 +36,7 @@ namespace Amaury.Store.DynamoDb.V2.Configurations
             services.AddSingleton<IAmazonDynamoDB>(client);
             services.AddSingleton<ICelebrityEventStoreConfiguration, DynamoDbEventStoreConfiguration>();
             services.AddAsyncInitializer<DynamoDbEventStoreInitializer>();
-            services.AddSingleton<ICelebrityEventStore, DynamoDbEventStore>();
+            services.AddSingleton<ICelebrityEventStore, DynamoDbCelebrityEventStore>();
         }
     }
 }
