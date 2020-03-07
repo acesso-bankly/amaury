@@ -11,7 +11,9 @@ namespace Amaury.V2.Abstractions
         public CelebrityAggregateBase() => Version = 0;
 
         public string Id { get; protected set; }
-        public DateTime Created { get; protected set; }
+        public DateTime CreatedAt { get; protected set; }
+        public DateTime? UpdatedAt { get; protected set; }
+
         public long Version { get; protected set; }
 
         public void ApplyEvent(CelebrityEventBase @event)
@@ -24,7 +26,7 @@ namespace Amaury.V2.Abstractions
 
         public IEnumerable<CelebrityEventBase> GetUncommittedEvents() => _uncommittedEvents.AsEnumerable();
 
-        protected void RaiseEvent<TEvent>(TEvent @event) where TEvent : CelebrityEventBase
+        protected void AppendEvent<TEvent>(TEvent @event) where TEvent : CelebrityEventBase
         {
             UpVersion();
             @event.SetAggregateVersion(Version);
