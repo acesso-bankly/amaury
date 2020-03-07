@@ -38,7 +38,7 @@ namespace Amaury.Store.DynamoDb.V2
             var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
             var writer = table.CreateBatchWrite();
 
-            var eventModels = ParseToDynamoDbEventModel(events);
+            var eventModels = ParseToDynamoDbEventModels(events);
             foreach(var document in eventModels.Select(@event => _dbContext.ToDocument(@event))) { writer.AddDocumentToPut(document); }
 
             await writer.ExecuteAsync(cancellationToken);
@@ -97,7 +97,6 @@ namespace Amaury.Store.DynamoDb.V2
             return @event;
         }
 
-        private IEnumerable<DynamoDbEventModel> ParseToDynamoDbEventModel(IEnumerable<CelebrityEventBase> events)
-            => events.Select(@event => new DynamoDbEventModel(@event));
+        private IEnumerable<DynamoDbEventModel> ParseToDynamoDbEventModels(IEnumerable<CelebrityEventBase> events) => events.Select(@event => new DynamoDbEventModel(@event));
     }
 }
