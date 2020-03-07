@@ -10,9 +10,9 @@ namespace Amaury.Store.DynamoDb.V2.Configurations
     [ExcludeFromCodeCoverage]
     public static class EventStoreServiceExtensions
     {
-        public static void AddEventStore(this IServiceCollection services, Action<DynamoDb.Configurations.EventStoreOptions> configure = null)
+        public static void AddCelebrityEventStore(this IServiceCollection services, Action<DynamoEventStoreOptions> configure = null)
         {
-            var options = new DynamoDb.Configurations.EventStoreOptions();
+            var options = new DynamoEventStoreOptions();
             configure?.Invoke(options);
 
             services.AddSingleton(options);
@@ -22,9 +22,9 @@ namespace Amaury.Store.DynamoDb.V2.Configurations
             services.AddSingleton<ICelebrityEventStore, DynamoDbEventStore>();
         }
 
-        public static void AddEventStore(this IServiceCollection services, IAmazonDynamoDB client, Action<DynamoDb.Configurations.EventStoreOptions> configure = null)
+        public static void AddEventStore(this IServiceCollection services, IAmazonDynamoDB client, Action<DynamoEventStoreOptions> configure = null)
         {
-            var options = new DynamoDb.Configurations.EventStoreOptions();
+            var options = new DynamoEventStoreOptions();
             configure?.Invoke(options);
 
             services.AddSingleton(options);

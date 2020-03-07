@@ -19,7 +19,7 @@ namespace Amaury.Store.DynamoDb.V2
         private readonly ICelebrityEventFactory _eventFactory;
         private readonly DynamoDBOperationConfig _configuration;
 
-        public DynamoDbCelebrityEventStore(IDynamoDBContext dbContext, ICelebrityEventFactory eventFactory, EventStoreOptions options)
+        public DynamoDbCelebrityEventStore(IDynamoDBContext dbContext, ICelebrityEventFactory eventFactory, DynamoEventStoreOptions options)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _eventFactory = eventFactory ?? throw new ArgumentNullException(nameof(eventFactory));

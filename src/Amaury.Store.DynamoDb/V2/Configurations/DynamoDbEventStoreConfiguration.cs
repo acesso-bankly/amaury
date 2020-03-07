@@ -11,13 +11,13 @@ namespace Amaury.Store.DynamoDb.V2.Configurations
     {
         private readonly IAmazonDynamoDB _dynamoDb;
 
-        public DynamoDbEventStoreConfiguration(IAmazonDynamoDB dynamoDb, EventStoreOptions options)
+        public DynamoDbEventStoreConfiguration(IAmazonDynamoDB dynamoDb, DynamoEventStoreOptions options)
         {
             _dynamoDb = dynamoDb ?? throw new ArgumentNullException(nameof(dynamoDb));
             Options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        private EventStoreOptions Options { get; }
+        private DynamoEventStoreOptions Options { get; }
 
         public async Task ConfigureAsync()
         {
@@ -27,14 +27,11 @@ namespace Amaury.Store.DynamoDb.V2.Configurations
                 AttributeDefinitions = new List<AttributeDefinition>
                 {
                     new AttributeDefinition("AggregateId", ScalarAttributeType.S),
-                    new AttributeDefinition("AggregateVersion", ScalarAttributeType.N),
-                    new AttributeDefinition("Name", ScalarAttributeType.S),
-                    new AttributeDefinition("Timestamp", ScalarAttributeType.S),
-                    new AttributeDefinition("Data", ScalarAttributeType.S)
+                    new AttributeDefinition("AggregateVersion", ScalarAttributeType.N)
                 },
                 KeySchema = new List<KeySchemaElement>
                 {
-                    new KeySchemaElement("AggregatedId", KeyType.HASH),
+                    new KeySchemaElement("AggregateId", KeyType.HASH),
                     new KeySchemaElement("AggregateVersion", KeyType.RANGE)
                 },
                 BillingMode = Options.BillingMode,
