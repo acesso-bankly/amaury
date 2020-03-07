@@ -5,7 +5,7 @@ namespace Amaury.V2.Abstractions
     public interface ICelebrityAggregate
     {
         long Version { get; }
-        IEnumerable<CelebrityEventBase> GetUncommittedEvents();
+        ICollection<CelebrityEventBase> GetUncommittedEvents();
         void ClearUncommittedEvents();
     }
 }

@@ -24,7 +24,7 @@ namespace Amaury.V2.Abstractions
         
         public void ClearUncommittedEvents() => _uncommittedEvents.Clear();
 
-        public IEnumerable<CelebrityEventBase> GetUncommittedEvents() => _uncommittedEvents.AsEnumerable();
+        public ICollection<CelebrityEventBase> GetUncommittedEvents() => _uncommittedEvents;
 
         protected void AppendEvent<TEvent>(TEvent @event) where TEvent : CelebrityEventBase
         {
