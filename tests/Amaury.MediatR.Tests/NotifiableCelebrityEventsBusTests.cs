@@ -66,9 +66,9 @@ namespace Amaury.MediatR.Tests
             var fakeEvents = new Queue<INotifiableCelebrityEvent>();
             fakeEvents.Enqueue(new FakeNotifiableCelebrityEvent(expectedAggregatedId, new { Foo = "Foo", Bar = "Bar" }));
 
-            _eventStore.Get(Arg.Any<string>()).ReturnsForAnyArgs(fakeEvents);
+            _eventStore.GetEvents(Arg.Any<string>()).ReturnsForAnyArgs(fakeEvents);
 
-            var events = await _eventStore.Get(expectedAggregatedId);
+            var events = await _eventStore.GetEvents(expectedAggregatedId);
 
             events.Should().HaveCount(fakeEvents.Count);
         }
