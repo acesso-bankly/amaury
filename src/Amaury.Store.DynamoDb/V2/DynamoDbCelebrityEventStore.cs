@@ -71,7 +71,7 @@ namespace Amaury.Store.DynamoDb.V2
                     ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry>
                     {
                         { ":v_aggregate_id", aggregateId },
-                        { ":v_aggregate_version", version ?? 0 }
+                        { ":v_aggregate_version", version ?? 1 }
                     }
                 },
                 Limit = 10
