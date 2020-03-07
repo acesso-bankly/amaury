@@ -6,7 +6,7 @@ using Amazon.Extensions.NETCore.Setup;
 namespace Amaury.Store.DynamoDb.V2.Configurations
 {
     [ExcludeFromCodeCoverage]
-    public class EventStoreOptions : AWSOptions
+    public class DynamoEventStoreOptions : AWSOptions
     {
         public string StoreName { get; set; }
         public BillingMode BillingMode { get; set; }
