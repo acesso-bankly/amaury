@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Amaury.V2.Abstractions
@@ -19,9 +20,11 @@ namespace Amaury.V2.Abstractions
             ((dynamic)this).Apply((dynamic)@event);
             Version = @event.AggregateVersion;
         }
-        
-        public void ClearUncommittedEvents() => _uncommittedEvents.Clear();
 
+        public bool HasUncommittedEvents => _uncommittedEvents.Any();
+
+        public void ClearUncommittedEvents() => _uncommittedEvents.Clear();
+        
         public ICollection<CelebrityEventBase> GetUncommittedEvents() => _uncommittedEvents;
 
         protected void AppendEvent<TEvent>(TEvent @event) where TEvent : CelebrityEventBase
