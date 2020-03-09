@@ -35,10 +35,13 @@ namespace Amaury.Store.DynamoDb.V2
 
         public async Task CommitBatchAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken = default)
         {
+            var celebrityEvents = events.ToList();
+            if(celebrityEvents.Any() is false) return;
+
             var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
             var writer = table.CreateBatchWrite();
 
-            var eventModels = ParseToDynamoDbEventModels(events);
+            var eventModels = ParseToDynamoDbEventModels(celebrityEvents);
             foreach(var document in eventModels.Select(@event => _dbContext.ToDocument(@event))) { writer.AddDocumentToPut(document); }
 
             await writer.ExecuteAsync(cancellationToken);
