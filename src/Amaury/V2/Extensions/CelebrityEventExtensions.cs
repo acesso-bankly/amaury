@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Amaury.V2.Abstractions;
 using Newtonsoft.Json;
 
@@ -7,23 +9,16 @@ namespace Amaury.V2.Extensions
 {
     public static class CelebrityEventExtensions
     {
-        public static TEntity TakeSnapshot<TEntity>(this IEnumerable<CelebrityEventBase> self, string name = null, long? aggregatedVersion = null) where TEntity : CelebrityAggregateBase
+        public static TEntity TakeSnapshot<TEntity>(this IEnumerable<CelebrityEventBase> self) where TEntity : CelebrityAggregateBase
         {
-            var @event = name is null ? self.TakeEvent(aggregatedVersion) : self.TakeEvent(name, aggregatedVersion);
+            var instance = (TEntity) Activator.CreateInstance(typeof(TEntity), true);
+            
+            foreach(var item in self) { instance.ApplyEvent(item); }
 
-            return @event.TakeSnapshot<TEntity>();
+            return instance;
         }
 
-        public static TEntity TakeSnapshot<TEntity>(this CelebrityEventBase self) where TEntity : CelebrityAggregateBase
-        {
-            var json = JsonConvert.SerializeObject(self);
-            var entity = JsonConvert.DeserializeObject<TEntity>(json);
-            entity.SetVersion(self.AggregateVersion);
-
-            return entity;
-        }
-
-        private static CelebrityEventBase TakeEvent(this IEnumerable<CelebrityEventBase> self, string name = null, long? aggregatedVersion = null)
+        public static CelebrityEventBase TakeEvent(this IEnumerable<CelebrityEventBase> self, string name = null, long? aggregatedVersion = null)
         {
             var events = self.Where(item => item.Name.Equals(name));
             var @event = events.TakeEvent(aggregatedVersion);
