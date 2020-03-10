@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Amaury.V2.Abstractions;
-using Newtonsoft.Json;
 
 namespace Amaury.V2.Extensions
 {
@@ -11,9 +9,12 @@ namespace Amaury.V2.Extensions
     {
         public static TEntity TakeSnapshot<TEntity>(this IEnumerable<CelebrityEventBase> self) where TEntity : CelebrityAggregateBase
         {
+            var events = self.ToList();
+            if(events.Any() is false) return default;
+
             var instance = (TEntity) Activator.CreateInstance(typeof(TEntity), true);
             
-            foreach(var item in self) { instance.ApplyEvent(item); }
+            foreach(var item in events) { instance.ApplyEvent(item); }
 
             return instance;
         }
