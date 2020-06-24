@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amaury.V2.Persistence;
+using Amaury.V2.Persistence.Configuration;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 

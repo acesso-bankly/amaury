@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -5,7 +6,7 @@ using Amaury.V2.Abstractions;
 
 namespace Amaury.V2.Persistence
 {
-    public interface ICelebrityEventStore
+    public interface ICelebrityEventStore : IDisposable
     {
         Task CommitBatchAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken = default);
         Task CommitAsync(CelebrityEventBase @event, CancellationToken cancellationToken = default);

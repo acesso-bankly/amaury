@@ -76,14 +76,18 @@ namespace Amaury.Store.DynamoDb.V2
                         { ":v_aggregate_id", aggregateId },
                         { ":v_aggregate_version", version ?? 1 }
                     }
-                },
-                Limit = 10
+                }
             });
 
-            var items = await search.GetNextSetAsync(cancellationToken);
-            var documents = _dbContext.FromDocuments<DynamoDbEventModel>(items);
-
-            return ParseToCelebrityEvents(documents);
+            var events = new List<DynamoDbEventModel>();
+            do
+            {
+                var items = await search.GetNextSetAsync(cancellationToken);
+                events.AddRange(_dbContext.FromDocuments<DynamoDbEventModel>(items));
+            }
+            while(search.IsDone is false);
+            
+            return ParseToCelebrityEvents(events);
         }
 
         private IEnumerable<CelebrityEventBase> ParseToCelebrityEvents(IEnumerable<DynamoDbEventModel> documents)
@@ -101,5 +105,28 @@ namespace Amaury.Store.DynamoDb.V2
         }
 
         private IEnumerable<DynamoDbEventModel> ParseToDynamoDbEventModels(IEnumerable<CelebrityEventBase> events) => events.Select(@event => new DynamoDbEventModel(@event));
+
+        #region dispose pattern
+
+        private bool _disposed;
+
+        private void Dispose(bool disposing)
+        {
+            if(_disposed) { return; }
+
+            if(disposing) { _dbContext?.Dispose(); }
+
+            _disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~DynamoDbCelebrityEventStore() => Dispose(false);
+
+        #endregion
     }
 }

@@ -1,11 +1,4 @@
-using System.Threading.Tasks;
-
-namespace Amaury.V2.Persistence
+namespace Amaury.V2.Persistence.Configuration
 {
-    public interface ICelebrityEventStoreConfiguration
-    {
-        Task ConfigureAsync();
-
-        Task<bool> TableExist(string tableName);
-    }
+    public interface ICelebrityEventStoreConfiguration : IDatabaseContextConfiguration { }
 }
