@@ -36,14 +36,14 @@ namespace Amaury.Store.DynamoDb.V2
         public async Task SaveAsync(TEntity entity)
         {
             var model = _factoryModel.ToModel(entity);
-            _configuration.ConsistentRead = true;
+            _configuration.ConsistentRead = _options.UseConsistentlyWrite;
             await _dbContext.SaveAsync(model, _configuration);
         }
 
         public async Task<TEntity> GetAsync(string aggregateId)
         {
             _configuration.IndexName = _options.SnapshotIndex;
-            _configuration.ConsistentRead = false;
+            _configuration.ConsistentRead = _options.UseConsistentlyRead;
 
             var search = _dbContext.QueryAsync<TModel>(aggregateId, _configuration);
 

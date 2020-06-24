@@ -11,5 +11,7 @@ namespace Amaury.Store.DynamoDb.V2.Configurations
         public ProvisionedThroughput ProvisionedThroughput { get; set; }
         public string SnapshotIndex { get; set; }
         public string AggregateKey { get; set; } = "AggregateId";
+        public bool UseConsistentlyRead { get; set; }
+        public bool UseConsistentlyWrite { get; set; }
     }
 }
