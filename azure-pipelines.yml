@@ -33,6 +33,13 @@ stages:
         vmImage: 'ubuntu-latest'
       timeoutInMinutes: 10
       steps:
+      - task: UseDotNet@2
+        displayName: 'Use .NET Core sdk'
+        inputs:
+          packageType: sdk
+          version: 2.2.203
+          installationPath: $(Agent.ToolsDirectory)/dotnet
+
       - task: DotNetCoreCLI@2
         displayName: Restore
         inputs:
