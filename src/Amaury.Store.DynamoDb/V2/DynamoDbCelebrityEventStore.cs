@@ -76,14 +76,18 @@ namespace Amaury.Store.DynamoDb.V2
                         { ":v_aggregate_id", aggregateId },
                         { ":v_aggregate_version", version ?? 1 }
                     }
-                },
-                Limit = 10
+                }
             });
 
-            var items = await search.GetNextSetAsync(cancellationToken);
-            var documents = _dbContext.FromDocuments<DynamoDbEventModel>(items);
+            var events = new List<DynamoDbEventModel>();
+            do
+            {
+                var items = await search.GetNextSetAsync(cancellationToken);
+                events.AddRange(_dbContext.FromDocuments<DynamoDbEventModel>(items));
+            }
+            while(search.IsDone is false);
 
-            return ParseToCelebrityEvents(documents);
+            return ParseToCelebrityEvents(events);
         }
 
         private IEnumerable<CelebrityEventBase> ParseToCelebrityEvents(IEnumerable<DynamoDbEventModel> documents)
