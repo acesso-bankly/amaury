@@ -60,7 +60,7 @@ namespace Amaury.Store.DynamoDb.V2
         public async Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, CancellationToken cancellationToken = default)
         {
             var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
-
+            
             var search = table.Query(new QueryOperationConfig
             {
                 KeyExpression = new Expression
@@ -75,7 +75,7 @@ namespace Amaury.Store.DynamoDb.V2
                     {
                         { ":v_aggregate_id", aggregateId },
                         { ":v_aggregate_version", version ?? 1 }
-                    }
+                    },
                 }
             });
 
@@ -83,7 +83,11 @@ namespace Amaury.Store.DynamoDb.V2
             do
             {
                 var items = await search.GetNextSetAsync(cancellationToken);
-                events.AddRange(_dbContext.FromDocuments<DynamoDbEventModel>(items));
+
+                if(items.Any())
+                {
+                    events.AddRange(_dbContext.FromDocuments<DynamoDbEventModel>(items));
+                }
             }
             while(search.IsDone is false);
 
@@ -97,10 +101,10 @@ namespace Amaury.Store.DynamoDb.V2
         {
             var @event = _eventFactory.GetEvent(document.Name, document.Data);
 
-            //TODO rever formar para retirar este trecho de código
             @event.SetAggregateId(document.AggregateId);
             @event.SetAggregateVersion(document.AggregateVersion);
             @event.SetTimestamp(document.Timestamp);
+
             return @event;
         }
 
