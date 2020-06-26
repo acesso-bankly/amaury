@@ -35,6 +35,8 @@ namespace Amaury.Store.DynamoDb.V2
 
         public async Task CommitBatchAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken = default)
         {
+            if(events is null) throw new ArgumentNullException(nameof(events));
+
             var celebrityEvents = events.ToList();
             if(celebrityEvents.Any() is false) return;
 
@@ -49,6 +51,8 @@ namespace Amaury.Store.DynamoDb.V2
 
         public async Task CommitAsync(CelebrityEventBase @event, CancellationToken cancellationToken = default)
         {
+            if(@event is null) throw new ArgumentNullException(nameof(@event));
+
             var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
             var document = _dbContext.ToDocument(@event);
 
@@ -59,6 +63,8 @@ namespace Amaury.Store.DynamoDb.V2
 
         public async Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, CancellationToken cancellationToken = default)
         {
+            if(aggregateId is null) throw new ArgumentNullException(nameof(aggregateId));
+
             var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
             
             var search = table.Query(new QueryOperationConfig
