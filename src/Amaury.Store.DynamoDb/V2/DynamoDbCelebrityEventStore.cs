@@ -18,16 +18,19 @@ namespace Amaury.Store.DynamoDb.V2
         private readonly IDynamoDBContext _dbContext;
         private readonly ICelebrityEventFactory _eventFactory;
         private readonly DynamoDBOperationConfig _configuration;
+        private readonly DynamoEventStoreOptions _options;
 
         public DynamoDbCelebrityEventStore(IAmazonDynamoDB client, ICelebrityEventFactory eventFactory, DynamoEventStoreOptions options)
         {
             if(client is null) throw new ArgumentNullException(nameof(client));
             _eventFactory = eventFactory ?? throw new ArgumentNullException(nameof(eventFactory));
 
+            _options = options;
             _configuration = new DynamoDBOperationConfig
             {
                 OverrideTableName = options.StoreName,
-                Conversion = DynamoDBEntryConversion.V2
+                Conversion = DynamoDBEntryConversion.V2,
+                IndexName = options.IndexName
             };
 
             _dbContext = new DynamoDBContext(client);
@@ -82,7 +85,8 @@ namespace Amaury.Store.DynamoDb.V2
                         { ":v_aggregate_id", aggregateId },
                         { ":v_aggregate_version", version ?? 1 }
                     },
-                }
+                },
+                IndexName = _options.IndexName
             });
 
             var events = new List<DynamoDbEventModel>();
