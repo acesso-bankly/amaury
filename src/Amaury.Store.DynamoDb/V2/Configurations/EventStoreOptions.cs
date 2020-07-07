@@ -11,5 +11,6 @@ namespace Amaury.Store.DynamoDb.V2.Configurations
         public string StoreName { get; set; }
         public BillingMode BillingMode { get; set; }
         public ProvisionedThroughput ProvisionedThroughput { get; set; }
+        public string IndexName { get; set; }
     }
 }
