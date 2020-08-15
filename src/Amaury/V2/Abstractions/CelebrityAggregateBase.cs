@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace Amaury.V2.Abstractions
@@ -46,5 +47,11 @@ namespace Amaury.V2.Abstractions
         }
 
         public abstract string GetAggregateId();
+
+        public async Task RaiseEventAsync<TEvent>(Func<TEvent, Task> func) where TEvent : CelebrityEventBase
+        {
+            var @event = GetUncommittedEvents().OfType<TEvent>().First();
+            await func(@event);
+        }
     }
 }
