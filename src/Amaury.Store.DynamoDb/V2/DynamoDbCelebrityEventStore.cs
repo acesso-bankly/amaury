@@ -64,12 +64,12 @@ namespace Amaury.Store.DynamoDb.V2
             await table.PutItemAsync(document, new PutItemOperationConfig { Expected = data }, cancellationToken);
         }
 
-        public async Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, bool consistentRead = false, CancellationToken cancellationToken = default)
         {
             if(aggregateId is null) throw new ArgumentNullException(nameof(aggregateId));
 
             var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
-            
+
             var search = table.Query(new QueryOperationConfig
             {
                 KeyExpression = new Expression
@@ -86,7 +86,8 @@ namespace Amaury.Store.DynamoDb.V2
                         { ":v_aggregate_version", version ?? 1 }
                     },
                 },
-                IndexName = _options.IndexName
+                IndexName = _options.IndexName,
+                ConsistentRead = consistentRead
             });
 
             var events = new List<DynamoDbEventModel>();

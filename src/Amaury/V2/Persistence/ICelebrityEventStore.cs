@@ -9,6 +9,6 @@ namespace Amaury.V2.Persistence
     {
         Task CommitBatchAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken = default);
         Task CommitAsync(CelebrityEventBase @event, CancellationToken cancellationToken = default);
-        Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, CancellationToken cancellationToken = default);
+        Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, bool consistentRead = false, CancellationToken cancellationToken = default);
     }
 }
