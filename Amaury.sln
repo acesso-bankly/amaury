@@ -17,9 +17,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury.Store.DynamoDb.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury.Tests", "tests\Amaury.Tests\Amaury.Tests.csproj", "{70769428-AAF8-4009-8DA3-E0F57BA3E204}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amaury.MediatR", "src\Amaury.MediatR\Amaury.MediatR.csproj", "{3FBF7AD3-7E53-4539-B87E-A5DECB806889}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury.MediatR", "src\Amaury.MediatR\Amaury.MediatR.csproj", "{3FBF7AD3-7E53-4539-B87E-A5DECB806889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amaury.MediatR.Tests", "tests\Amaury.MediatR.Tests\Amaury.MediatR.Tests.csproj", "{8E898CAC-4341-436A-BC68-527277092803}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury.MediatR.Tests", "tests\Amaury.MediatR.Tests\Amaury.MediatR.Tests.csproj", "{8E898CAC-4341-436A-BC68-527277092803}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "devops", "devops", "{5393521F-F68F-433D-BBBA-C2D1C37CC33A}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yml = azure-pipelines.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
