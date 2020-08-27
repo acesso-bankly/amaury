@@ -8,7 +8,9 @@ namespace Amaury.V2.Abstractions
 {
     public abstract class CelebrityAggregateBase : ICelebrityAggregate
     {
-        private readonly ICollection<CelebrityEventBase> _uncommittedEvents = new LinkedList<CelebrityEventBase>();
+        private readonly ICollection<CelebrityEventBase> _uncommittedEvents;
+
+        public CelebrityAggregateBase() => _uncommittedEvents = new LinkedList<CelebrityEventBase>();
 
         public string Id => GetAggregateId();
         [JsonProperty] public DateTime CreatedAt { get; protected set; }
@@ -48,10 +50,32 @@ namespace Amaury.V2.Abstractions
 
         public abstract string GetAggregateId();
 
-        public async Task RaiseEventAsync<TEvent>(Func<TEvent, Task> func) where TEvent : CelebrityEventBase
+        public Task RaiseEventsOfTypeAsync<TEvent>(Func<TEvent, Task> func) where TEvent : CelebrityEventBase
         {
-            var @event = GetUncommittedEvents().OfType<TEvent>().First();
-            await func(@event);
+            var events = GetUncommittedEvents().OfType<TEvent>().ToList();
+            
+            if(events.Any())
+            {
+                var tasks = events.Select(func).ToArray();
+
+                Task.WaitAll(tasks);
+            }
+            
+            return Task.CompletedTask;
+        }
+
+        public Task RaiseAllEventsAsync(Func<CelebrityEventBase, Task> func)
+        {
+            var events = GetUncommittedEvents().ToList();
+
+            if(events.Any())
+            {
+                var tasks = events.Select(func).ToArray();
+
+                Task.WaitAll(tasks);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }
