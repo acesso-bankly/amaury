@@ -5,9 +5,9 @@
 
 variables:
   MajorVersion: 1
-  MinorVersion: 2
-  Patch: 22
-  PackageVersion: 1.2.22
+  MinorVersion: 3
+  Patch: 0
+  PackageVersion: 1.3.0
   BuildConfiguration: Release
 
 name: $(MajorVersion).$(MinorVersion).$(Patch)-$(Build.BuildId)
@@ -89,7 +89,7 @@ stages:
           includesymbols: true
           includesource: true
           packDirectory: $(Build.ArtifactStagingDirectory)
-          verbosityPack: 'minimal'   
+          verbosityPack: 'minimal'
           versioningScheme: 'byPrereleaseNumber'
           majorVersion: '$(MajorVersion)'
           minorVersion: '$(MinorVersion)'
