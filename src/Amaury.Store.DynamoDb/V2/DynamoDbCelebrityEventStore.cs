@@ -28,7 +28,7 @@ namespace Amaury.Store.DynamoDb.V2
             _options = options;
             _configuration = new DynamoDBOperationConfig
             {
-                OverrideTableName = options.StoreName,
+                OverrideTableName = options.EventStore ?? options.StoreName,
                 Conversion = DynamoDBEntryConversion.V2,
                 IndexName = options.IndexName
             };

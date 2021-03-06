@@ -23,7 +23,7 @@ namespace Amaury.Store.DynamoDb.V2.Configurations
         {
             var request = new CreateTableRequest
             {
-                TableName = Options.StoreName,
+                TableName = Options.EventStore ?? Options.StoreName,
                 AttributeDefinitions = new List<AttributeDefinition>
                 {
                     new AttributeDefinition("AggregateId", ScalarAttributeType.S),
@@ -38,19 +38,19 @@ namespace Amaury.Store.DynamoDb.V2.Configurations
                 ProvisionedThroughput = Options.BillingMode == BillingMode.PAY_PER_REQUEST ? null : Options.ProvisionedThroughput,
             };
 
-            await CreateIfNotExist(request, Options.StoreName);
+            await CreateIfNotExist(request, Options.EventStore);
         }
 
         public async Task<bool> TableExist(string tableName)
         {
             var tables = await _dynamoDb.ListTablesAsync();
-            var existTable = tables.TableNames.Contains(Options.StoreName);
+            var existTable = tables.TableNames.Contains(tableName);
             return existTable;
         }
 
         private async Task CreateIfNotExist(CreateTableRequest request, string tableName)
         {
-            if(await TableExist(tableName)) { return; }
+            if(await TableExist(tableName)) return;
 
             await _dynamoDb.CreateTableAsync(request);
         }
