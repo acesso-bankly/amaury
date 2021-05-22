@@ -1,16 +1,16 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Amaury.Abstractions.Persistence;
+using Amaury.Persistence.Configuration;
 using AspNetCore.AsyncInitialization;
 
 namespace Amaury.Store.DynamoDb.Configurations
 {
     [ExcludeFromCodeCoverage]
-    public class EventStoreInitializer : IAsyncInitializer
+    public class DynamoDbEventStoreInitializer : IAsyncInitializer
     {
-        private readonly IEventStoreConfiguration _configureEventStore;
+        private readonly ICelebrityEventStoreConfiguration _configureEventStore;
 
-        public EventStoreInitializer(IEventStoreConfiguration registerTables) => _configureEventStore = registerTables;
+        public DynamoDbEventStoreInitializer(ICelebrityEventStoreConfiguration registerTables) => _configureEventStore = registerTables;
 
         public async Task InitializeAsync() => await _configureEventStore.ConfigureAsync();
     }

@@ -1,5 +1,5 @@
 using System;
-using Amaury.V2.Abstractions;
+using Amaury.Abstractions;
 
 namespace Amaury.Tests.Fixtures
 {
