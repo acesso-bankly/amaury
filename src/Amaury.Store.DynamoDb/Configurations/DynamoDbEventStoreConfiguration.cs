@@ -21,7 +21,7 @@ namespace Amaury.Store.DynamoDb.Configurations
 
         public async Task ConfigureAsync()
         {
-            var tableName = Options.EventStore ?? Options.StoreName;
+            var tableName = Options.EventStore;
             var request = new CreateTableRequest
             {
                 TableName = tableName,

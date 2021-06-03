@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
     <Description>Event Store implementation in AWS DynamoDb to Amaury</Description>
     <Copyright>Copyright © 2019 Acesso Soluções de Pagamentos S.A</Copyright>
     <Authors>Acesso Tecnologia</Authors>
@@ -13,15 +12,16 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/acessocard/amaury</RepositoryUrl>
     <SignAssembly>true</SignAssembly>
+    <TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.AsyncInitialization" Version="1.1.2" />
-    <PackageReference Include="AWSSDK.Core" Version="3.5.3.5" />
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.101" />
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.5.4.34" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Polly" Version="7.2.1" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.0.31" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.0.1" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.0.30" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
