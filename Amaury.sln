@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{F4F6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury", "src\Amaury\Amaury.csproj", "{F900915C-37CA-4166-9F42-748ED6484BC6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury.Store.DynamoDb", "src\Amaury.Store.DynamoDb\Amaury.Store.DynamoDb.csproj", "{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{65A9D093-395E-4F3C-AE0E-DAA4DA6F273A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amaury.Tests", "tests\Amaury.Tests\Amaury.Tests.csproj", "{70769428-AAF8-4009-8DA3-E0F57BA3E204}"
@@ -19,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "devops", "devops", "{539352
 	ProjectSection(SolutionItems) = preProject
 		azure-pipelines.yml = azure-pipelines.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amaury.Store.DynamoDb", "src\Amaury.Store.DynamoDb\Amaury.Store.DynamoDb.csproj", "{156A02BC-1DB9-40AC-B97A-90737CD63249}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,22 +30,22 @@ Global
 		{F900915C-37CA-4166-9F42-748ED6484BC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F900915C-37CA-4166-9F42-748ED6484BC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F900915C-37CA-4166-9F42-748ED6484BC6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{70769428-AAF8-4009-8DA3-E0F57BA3E204}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{70769428-AAF8-4009-8DA3-E0F57BA3E204}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70769428-AAF8-4009-8DA3-E0F57BA3E204}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70769428-AAF8-4009-8DA3-E0F57BA3E204}.Release|Any CPU.Build.0 = Release|Any CPU
+		{156A02BC-1DB9-40AC-B97A-90737CD63249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{156A02BC-1DB9-40AC-B97A-90737CD63249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{156A02BC-1DB9-40AC-B97A-90737CD63249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{156A02BC-1DB9-40AC-B97A-90737CD63249}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F900915C-37CA-4166-9F42-748ED6484BC6} = {F4621A37-BAB1-4AC1-999B-87DDCB66D251}
-		{24773EA5-1F7B-42FD-A382-E49E1BDE3BB9} = {F4621A37-BAB1-4AC1-999B-87DDCB66D251}
 		{70769428-AAF8-4009-8DA3-E0F57BA3E204} = {65A9D093-395E-4F3C-AE0E-DAA4DA6F273A}
+		{156A02BC-1DB9-40AC-B97A-90737CD63249} = {F4621A37-BAB1-4AC1-999B-87DDCB66D251}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {87903BE2-88C8-4BD6-B21C-F4BE29D3DE69}
