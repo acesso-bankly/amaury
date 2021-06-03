@@ -5,12 +5,13 @@ namespace Amaury.Tests.Fixtures
 {
     public class FakeEntity : CelebrityAggregateBase
     {
-        private string _id;
-        public FakeEntity() => _id = Guid.NewGuid().ToString();
+        public FakeEntity() => Id = Guid.NewGuid().ToString();
 
-        public FakeEntity(string id) => _id = id;
+        public FakeEntity(string id) => Id = id;
 
         public override string GetAggregateId() => Id;
+
+        public string Id { get;private set; }
 
         public string Message { get; private set; }
 
@@ -18,7 +19,7 @@ namespace Amaury.Tests.Fixtures
 
         public void Apply(FakeEvent @event)
         {
-            _id = @event.Id;
+            Id = @event.Id;
             Message = @event.Message;
         }
     }
