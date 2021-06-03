@@ -13,6 +13,7 @@ namespace Amaury.Abstractions
         public CelebrityAggregateBase() => _uncommittedEvents = new LinkedList<CelebrityEventBase>();
 
         public string Id => GetAggregateId();
+
         [JsonProperty] public DateTime CreatedAt { get; protected set; }
         [JsonProperty] public DateTime? UpdatedAt { get; protected set; }
 
@@ -27,7 +28,7 @@ namespace Amaury.Abstractions
         public bool HasUncommittedEvents => _uncommittedEvents.Any();
 
         public void ClearUncommittedEvents() => _uncommittedEvents.Clear();
-        
+
         public ICollection<CelebrityEventBase> GetUncommittedEvents() => _uncommittedEvents;
 
         protected void AppendEvent<TEvent>(TEvent @event) where TEvent : CelebrityEventBase
@@ -50,21 +51,20 @@ namespace Amaury.Abstractions
 
         public abstract string GetAggregateId();
 
-        public Task RaiseEventsOfTypeAsync<TEvent>(Func<TEvent, Task> func) where TEvent : CelebrityEventBase
+        public Task RaiseEventsAsync<TEvent>(Func<TEvent, Task> func) where TEvent : CelebrityEventBase
         {
             var events = GetUncommittedEvents().OfType<TEvent>().ToList();
-            
-            if(events.Any())
-            {
-                var tasks = events.Select(func).ToArray();
 
-                Task.WaitAll(tasks);
-            }
-            
+            if(!events.Any()) return Task.CompletedTask;
+
+            var tasks = events.Select(func).ToArray();
+
+            Task.WaitAll(tasks);
+
             return Task.CompletedTask;
         }
 
-        public Task RaiseAllEventsAsync(Func<CelebrityEventBase, Task> func)
+        public Task RaiseEventsAsync(Func<CelebrityEventBase, Task> func)
         {
             var events = GetUncommittedEvents().ToList();
 

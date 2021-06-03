@@ -37,7 +37,7 @@ namespace Amaury.Tests
             entity.DoSomething(message);
             var bag = new ConcurrentBag<CelebrityEventBase>();
 
-            await entity.RaiseEventsOfTypeAsync<FakeEvent>(item => PublishAsync(item, bag));
+            await entity.RaiseEventsAsync<FakeEvent>(item => PublishAsync(item, bag));
 
             bag.Count.Should().Be(1);
         }
@@ -48,7 +48,7 @@ namespace Amaury.Tests
         {
             var bag = new ConcurrentBag<CelebrityEventBase>();
 
-            await entity.RaiseEventsOfTypeAsync<FakeEvent>(item => PublishAsync(item, bag));
+            await entity.RaiseEventsAsync<FakeEvent>(item => PublishAsync(item, bag));
 
             bag.Count.Should().Be(0);
         }
@@ -62,7 +62,7 @@ namespace Amaury.Tests
 
             var bag = new ConcurrentBag<CelebrityEventBase>();
 
-            await entity.RaiseAllEventsAsync(item => PublishAsync(item, bag));
+            await entity.RaiseEventsAsync(item => PublishAsync(item, bag));
 
             bag.Count.Should().Be(2);
         }
@@ -73,7 +73,7 @@ namespace Amaury.Tests
         {
             var bag = new ConcurrentBag<CelebrityEventBase>();
 
-            await entity.RaiseAllEventsAsync(item => PublishAsync(item, bag));
+            await entity.RaiseEventsAsync(item => PublishAsync(item, bag));
 
             bag.Count.Should().Be(0);
         }
