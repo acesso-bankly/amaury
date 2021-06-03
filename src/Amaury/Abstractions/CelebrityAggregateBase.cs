@@ -12,7 +12,7 @@ namespace Amaury.Abstractions
 
         public CelebrityAggregateBase() => _uncommittedEvents = new LinkedList<CelebrityEventBase>();
 
-        public string Id => GetAggregateId();
+        public string AggregateId => GetAggregateId();
 
         [JsonProperty] public DateTime CreatedAt { get; protected set; }
         [JsonProperty] public DateTime? UpdatedAt { get; protected set; }
@@ -35,7 +35,7 @@ namespace Amaury.Abstractions
         {
             UpVersion();
             @event.SetAggregateVersion(Version);
-            @event.SetAggregateId(Id);
+            @event.SetAggregateId(AggregateId);
 
             _uncommittedEvents.Add(@event);
             ApplyEvent(@event);
