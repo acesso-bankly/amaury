@@ -107,6 +107,7 @@ stages:
 
 - stage: PreRelease
   displayName: Publish pre released artifacts
+  condition: succeeded()
   jobs:
     - job: Deploy
       displayName: Deploy Artifacts to Nuget.org
