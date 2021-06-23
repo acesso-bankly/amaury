@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Amaury.Store.DynamoDb.Models
 {
-    public class DynamoDbEventModel : IEventStoreModel
+    public class DynamoDbEventModel : IEventStoreModel<string>
     {
         public DynamoDbEventModel() { }
 
