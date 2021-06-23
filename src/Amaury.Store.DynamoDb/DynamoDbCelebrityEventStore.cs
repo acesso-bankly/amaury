@@ -16,11 +16,11 @@ namespace Amaury.Store.DynamoDb
     public class DynamoDbCelebrityEventStore : ICelebrityEventStore
     {
         private readonly IDynamoDBContext _dbContext;
-        private readonly ICelebrityEventFactory _eventFactory;
+        private readonly ICelebrityEventFactory<string> _eventFactory;
         private readonly DynamoDBOperationConfig _configuration;
         private readonly DynamoEventStoreOptions _options;
 
-        public DynamoDbCelebrityEventStore(IAmazonDynamoDB client, ICelebrityEventFactory eventFactory, DynamoEventStoreOptions options)
+        public DynamoDbCelebrityEventStore(IAmazonDynamoDB client, ICelebrityEventFactory<string> eventFactory, DynamoEventStoreOptions options)
         {
             if(client is null) throw new ArgumentNullException(nameof(client));
             _eventFactory = eventFactory ?? throw new ArgumentNullException(nameof(eventFactory));
@@ -108,7 +108,7 @@ namespace Amaury.Store.DynamoDb
         private IEnumerable<CelebrityEventBase> ParseToCelebrityEvents(IEnumerable<DynamoDbEventModel> documents)
             => documents.Select(ParseToCelebrityEventBase);
 
-        private CelebrityEventBase ParseToCelebrityEventBase(IEventStoreModel document)
+        private CelebrityEventBase ParseToCelebrityEventBase(IEventStoreModel<string> document)
         {
             var @event = _eventFactory.GetEvent(document.Name, document.Data);
 
