@@ -41,6 +41,11 @@ namespace Amaury.Store.DynamoDb.Configurations
                 LocalSecondaryIndexes = new List<LocalSecondaryIndex>
                 {
                         new FindByPartitionKeyAndAggregateVersionIndex()
+                },
+                StreamSpecification = new StreamSpecification
+                {
+                        StreamEnabled = true,
+                        StreamViewType = StreamViewType.NEW_AND_OLD_IMAGES
                 }
             };
 

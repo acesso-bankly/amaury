@@ -18,9 +18,9 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.AsyncInitialization" Version="1.1.2" />
-    <PackageReference Include="AWSSDK.Core" Version="3.7.0.31" />
-    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.0.1" />
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.0.30" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.12.13" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.2" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.3.60" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
