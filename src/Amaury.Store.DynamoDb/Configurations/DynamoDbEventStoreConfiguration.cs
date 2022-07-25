@@ -28,7 +28,8 @@ namespace Amaury.Store.DynamoDb.Configurations
                 AttributeDefinitions = new List<AttributeDefinition>
                 {
                     new AttributeDefinition("PartitionKey", ScalarAttributeType.S),
-                    new AttributeDefinition("SortKey", ScalarAttributeType.S)
+                    new AttributeDefinition("SortKey", ScalarAttributeType.S),
+                    new AttributeDefinition("AggregateVersion", ScalarAttributeType.N)
                 },
                 KeySchema = new List<KeySchemaElement>
                 {
