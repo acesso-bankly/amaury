@@ -8,7 +8,7 @@ namespace Amaury.Store.DynamoDb.Models
         public DynamoDbSnapshotModel(TEntity entity, string snapshotPrefix)
         {
             PartitionKey = AggregateId = entity.AggregateId;
-            SortKey = $"{snapshotPrefix}{entity.AggregateId}";
+            SortKey = $"{snapshotPrefix}#{entity.AggregateId}";
             Version = entity.Version;
         }
 

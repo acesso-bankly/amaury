@@ -12,10 +12,11 @@ namespace Amaury.Store.DynamoDb.Models
         public DynamoDbEventModel(CelebrityEventBase eventBase, string eventPrefix)
         {
             PartitionKey = AggregateId = eventBase.AggregateId;
-            SortKey = $"{eventPrefix}#{eventBase.AggregateVersion}";
             AggregateVersion = eventBase.AggregateVersion;
             Timestamp = eventBase.Timestamp;
             Name = eventBase.Name;
+
+            SortKey = $"{eventPrefix}#{AggregateVersion}#{Name}#{Timestamp:O}";
             Data = JsonConvert.SerializeObject(eventBase);
         }
 

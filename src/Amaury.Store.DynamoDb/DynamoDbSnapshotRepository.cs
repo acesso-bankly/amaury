@@ -44,7 +44,7 @@ namespace Amaury.Store.DynamoDb
 
         public async Task<TEntity> LoadAsync(string aggregateId)
         {
-            var model = await _context.LoadAsync<TModel>(aggregateId, $"{_options.EventPrefix}{aggregateId}", _configuration);
+            var model = await _context.LoadAsync<TModel>(aggregateId, $"{_options.SnapshotPrefix}#{aggregateId}", _configuration);
             return _factory.ToEntity(model);
         }
 
