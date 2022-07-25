@@ -7,6 +7,6 @@ namespace Amaury.Persistence
     {
         Task SaveAsync(TEntity entity);
 
-        Task<TEntity> GetAsync(string aggregateId);
+        Task<TEntity> LoadAsync(string aggregateId);
     }
 }

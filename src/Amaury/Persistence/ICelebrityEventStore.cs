@@ -1,14 +1,12 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Amaury.Abstractions;
 
 namespace Amaury.Persistence
 {
-    public interface ICelebrityEventStore
+    public interface ICelebrityEventStore<TEntity> where TEntity : CelebrityAggregateBase
     {
-        Task CommitBatchAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken = default);
-        Task CommitAsync(CelebrityEventBase @event, CancellationToken cancellationToken = default);
-        Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, bool consistentRead = false, CancellationToken cancellationToken = default);
+        Task CommitAsync(TEntity entity, CancellationToken cancellationToken = default);
+        Task<TEntity> LoadAsync(string aggregateId, long? version = null, bool consistentRead = false, CancellationToken cancellationToken = default);
     }
 }

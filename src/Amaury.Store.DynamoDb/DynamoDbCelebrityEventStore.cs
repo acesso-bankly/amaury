@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Amaury.Abstractions;
+using Amaury.Extensions;
 using Amaury.Persistence;
 using Amaury.Store.DynamoDb.Configurations;
 using Amaury.Store.DynamoDb.Models;
@@ -13,9 +14,10 @@ using Amazon.DynamoDBv2.DocumentModel;
 
 namespace Amaury.Store.DynamoDb
 {
-    public class DynamoDbCelebrityEventStore : ICelebrityEventStore
+    public class DynamoDbCelebrityEventStore<TEntity> : ICelebrityEventStore<TEntity>
+            where TEntity : CelebrityAggregateBase
     {
-        private readonly IDynamoDBContext _dbContext;
+        private readonly IDynamoDBContext _context;
         private readonly ICelebrityEventFactory<string> _eventFactory;
         private readonly DynamoDBOperationConfig _configuration;
         private readonly DynamoEventStoreOptions _options;
@@ -33,60 +35,61 @@ namespace Amaury.Store.DynamoDb
                 IndexName = options.IndexName
             };
 
-            _dbContext = new DynamoDBContext(client);
+            _context = new DynamoDBContext(client);
         }
 
-        public async Task CommitBatchAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken = default)
+        public async Task CommitAsync(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            var uncommittedEvents = entity.GetUncommittedEvents();
+            await CommitEventsAsync(uncommittedEvents, cancellationToken);
+            entity.ClearUncommittedEvents();
+        }
+
+        public async Task<TEntity> LoadAsync(string aggregateId, long? version = null, bool consistentRead = false, CancellationToken cancellationToken = default)
+        {
+            var committedEvents = await ReadEventsAsync(aggregateId, version, consistentRead, cancellationToken: cancellationToken);
+            return committedEvents.TakeSnapshot<TEntity>();
+        }
+
+        private async Task CommitEventsAsync(IEnumerable<CelebrityEventBase> events, CancellationToken cancellationToken = default)
         {
             if(events is null) throw new ArgumentNullException(nameof(events));
 
             var celebrityEvents = events.ToList();
             if(celebrityEvents.Any() is false) return;
 
-            var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
+            var table = _context.GetTargetTable<DynamoDbEventModel>(_configuration);
             var writer = table.CreateBatchWrite();
 
             var eventModels = ParseToDynamoDbEventModels(celebrityEvents);
-            foreach(var document in eventModels.Select(@event => _dbContext.ToDocument(@event))) { writer.AddDocumentToPut(document); }
+            foreach(var document in eventModels.Select(@event => _context.ToDocument(@event))) { writer.AddDocumentToPut(document); }
 
             await writer.ExecuteAsync(cancellationToken);
         }
 
-        public async Task CommitAsync(CelebrityEventBase @event, CancellationToken cancellationToken = default)
-        {
-            if(@event is null) throw new ArgumentNullException(nameof(@event));
-
-            var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
-            var document = _dbContext.ToDocument(@event);
-
-            var data = @event.AggregateVersion == 0 ? null : await table.GetItemAsync(@event.AggregateId, @event.AggregateVersion - 1, cancellationToken);
-
-            await table.PutItemAsync(document, new PutItemOperationConfig { Expected = data }, cancellationToken);
-        }
-
-        public async Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, bool consistentRead = false, CancellationToken cancellationToken = default)
+        private async Task<IEnumerable<CelebrityEventBase>> ReadEventsAsync(string aggregateId, long? version = null, bool consistentRead = false, CancellationToken cancellationToken = default)
         {
             if(aggregateId is null) throw new ArgumentNullException(nameof(aggregateId));
 
-            var table = _dbContext.GetTargetTable<DynamoDbEventModel>(_configuration);
+            var table = _context.GetTargetTable<DynamoDbEventModel>(_configuration);
 
             var search = table.Query(new QueryOperationConfig
             {
                 KeyExpression = new Expression
                 {
-                    ExpressionStatement = "#aggregate_id = :v_aggregate_id and #aggregate_version >= :v_aggregate_version",
+                    ExpressionStatement = "#partition_key = :v_partition_key and #aggregate_version >= :v_aggregate_version",
                     ExpressionAttributeNames = new Dictionary<string, string>
                     {
-                        { "#aggregate_id", "AggregateId" },
+                        { "#partition_key", "PartitionKey" },
                         { "#aggregate_version", "AggregateVersion" }
                     },
                     ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry>
                     {
-                        { ":v_aggregate_id", aggregateId },
+                        { ":v_partition_key", aggregateId },
                         { ":v_aggregate_version", version ?? 1 }
                     },
                 },
-                IndexName = _options.IndexName,
+                IndexName = FindByPartitionKeyAndAggregateVersionIndex.INDEX_NAME,
                 ConsistentRead = consistentRead
             });
 
@@ -95,10 +98,7 @@ namespace Amaury.Store.DynamoDb
             {
                 var items = await search.GetNextSetAsync(cancellationToken);
 
-                if(items.Any())
-                {
-                    events.AddRange(_dbContext.FromDocuments<DynamoDbEventModel>(items));
-                }
+                if(items.Any()) events.AddRange(_context.FromDocuments<DynamoDbEventModel>(items));
             }
             while(search.IsDone is false);
 
@@ -119,6 +119,7 @@ namespace Amaury.Store.DynamoDb
             return @event;
         }
 
-        private IEnumerable<DynamoDbEventModel> ParseToDynamoDbEventModels(IEnumerable<CelebrityEventBase> events) => events.Select(@event => new DynamoDbEventModel(@event));
+        private IEnumerable<DynamoDbEventModel> ParseToDynamoDbEventModels(IEnumerable<CelebrityEventBase> events)
+            => events.Select(@event => new DynamoDbEventModel(@event, _options.EventPrefix));
     }
 }

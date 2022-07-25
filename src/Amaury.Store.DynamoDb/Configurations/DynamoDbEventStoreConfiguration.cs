@@ -27,19 +27,23 @@ namespace Amaury.Store.DynamoDb.Configurations
                 TableName = tableName,
                 AttributeDefinitions = new List<AttributeDefinition>
                 {
-                    new AttributeDefinition("AggregateId", ScalarAttributeType.S),
-                    new AttributeDefinition("AggregateVersion", ScalarAttributeType.N)
+                    new AttributeDefinition("PartitionKey", ScalarAttributeType.S),
+                    new AttributeDefinition("SortKey", ScalarAttributeType.S)
                 },
                 KeySchema = new List<KeySchemaElement>
                 {
-                    new KeySchemaElement("AggregateId", KeyType.HASH),
-                    new KeySchemaElement("AggregateVersion", KeyType.RANGE)
+                    new KeySchemaElement("PartitionKey", KeyType.HASH),
+                    new KeySchemaElement("SortKey", KeyType.RANGE)
                 },
                 BillingMode = Options.BillingMode,
                 ProvisionedThroughput = Options.BillingMode == BillingMode.PAY_PER_REQUEST ? null : Options.ProvisionedThroughput,
+                LocalSecondaryIndexes = new List<LocalSecondaryIndex>
+                {
+                        new FindByPartitionKeyAndAggregateVersionIndex()
+                }
             };
 
-            await CreateIfNotExist(request, tableName);
+            await CreateIfNotExistAsync(request, tableName);
         }
 
         public async Task<bool> TableExist(string tableName)
@@ -49,7 +53,7 @@ namespace Amaury.Store.DynamoDb.Configurations
             return existTable;
         }
 
-        private async Task CreateIfNotExist(CreateTableRequest request, string tableName)
+        private async Task CreateIfNotExistAsync(CreateTableRequest request, string tableName)
         {
             if(await TableExist(tableName)) return;
 

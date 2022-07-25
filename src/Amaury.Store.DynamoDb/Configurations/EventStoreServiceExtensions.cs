@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Amaury.Abstractions;
 using Amaury.Persistence;
 using Amaury.Persistence.Configuration;
+using Amaury.Store.DynamoDb.Models;
 using Amazon.DynamoDBv2;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +12,8 @@ namespace Amaury.Store.DynamoDb.Configurations
     [ExcludeFromCodeCoverage]
     public static class EventStoreServiceExtensions
     {
-        public static void AddCelebrityEventStore(this IServiceCollection services, Action<DynamoEventStoreOptions> configure = null)
+        public static void AddCelebrityEventStore<TEntity>(this IServiceCollection services, Action<DynamoEventStoreOptions> configure = null)
+                where TEntity : CelebrityAggregateBase
         {
             var options = new DynamoEventStoreOptions();
             configure?.Invoke(options);
@@ -20,30 +22,28 @@ namespace Amaury.Store.DynamoDb.Configurations
             services.AddAWSService<IAmazonDynamoDB>(options);
             services.AddSingleton<ICelebrityEventStoreConfiguration, DynamoDbEventStoreConfiguration>();
             services.AddAsyncInitializer<DynamoDbEventStoreInitializer>();
-            services.AddSingleton<ICelebrityEventStore, DynamoDbCelebrityEventStore>();
+            services.AddSingleton<ICelebrityEventStore<TEntity>, DynamoDbCelebrityEventStore<TEntity>>();
         }
 
-        public static void AddCelebrityEventFactory<TFactory>(this IServiceCollection services) where TFactory : ICelebrityEventFactory<string>, new()
+        public static void AddCelebrityEventFactory<TFactory>(this IServiceCollection services)
+                where TFactory : class, ICelebrityEventFactory<string>
         {
-            var factory = new TFactory();
-            services.AddSingleton<ICelebrityEventFactory<string>>(_ => factory);
+            services.AddSingleton<ICelebrityEventFactory<string>, TFactory>();
         }
 
-        public static void AddCelebritySnapshotRepository<TEntity, TImplementation>(this IServiceCollection services)
+        public static void AddCelebritySnapshotRepository<TEntity, TModel>(this IServiceCollection services)
                 where TEntity : CelebrityAggregateBase
-                where TImplementation : class, ISnapshotRepository<TEntity>
-            => services.AddSingleton<ISnapshotRepository<TEntity>, TImplementation>();
-
-        public static void AddEventStore(this IServiceCollection services, IAmazonDynamoDB client, Action<DynamoEventStoreOptions> configure = null)
+                where TModel : DynamoDbSnapshotModel<TEntity>
         {
-            var options = new DynamoEventStoreOptions();
-            configure?.Invoke(options);
+            services.AddSingleton<ISnapshotRepository<TEntity>, DynamoDbSnapshotRepository<TEntity, TModel>>();
+        }
 
-            services.AddSingleton(options);
-            services.AddSingleton<IAmazonDynamoDB>(client);
-            services.AddSingleton<ICelebrityEventStoreConfiguration, DynamoDbEventStoreConfiguration>();
-            services.AddAsyncInitializer<DynamoDbEventStoreInitializer>();
-            services.AddSingleton<ICelebrityEventStore, DynamoDbCelebrityEventStore>();
+        public static void AddAddCelebritySnapshotFactory<TFactory, TEntity, TModel>(this IServiceCollection services)
+                where TFactory : class, IDynamoDnSnapshotFactory<TEntity, TModel>
+                where TEntity : CelebrityAggregateBase
+                where TModel : DynamoDbSnapshotModel<TEntity>
+        {
+            services.AddSingleton<IDynamoDnSnapshotFactory<TEntity, TModel>, TFactory>();
         }
     }
 }
