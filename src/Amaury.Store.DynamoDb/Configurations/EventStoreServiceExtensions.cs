@@ -25,10 +25,10 @@ namespace Amaury.Store.DynamoDb.Configurations
             services.AddSingleton<ICelebrityEventStore<TEntity>, DynamoDbCelebrityEventStore<TEntity>>();
         }
 
-        public static void AddCelebrityEventFactory<TFactory>(this IServiceCollection services) where TFactory : ICelebrityEventFactory, new()
+        public static void AddCelebrityEventFactory<TFactory>(this IServiceCollection services)
+                where TFactory : class, ICelebrityEventFactory<string>
         {
-            var factory = new TFactory();
-            services.AddSingleton<ICelebrityEventFactory>(_ => factory);
+            services.AddSingleton<ICelebrityEventFactory<string>, TFactory>();
         }
 
         public static void AddCelebritySnapshotRepository<TEntity, TModel>(this IServiceCollection services)
