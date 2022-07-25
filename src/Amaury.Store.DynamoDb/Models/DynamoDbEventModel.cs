@@ -9,15 +9,18 @@ namespace Amaury.Store.DynamoDb.Models
     {
         public DynamoDbEventModel() { }
 
-        public DynamoDbEventModel(CelebrityEventBase eventBase)
+        public DynamoDbEventModel(CelebrityEventBase eventBase, string eventPrefix)
         {
-            AggregateId = eventBase.AggregateId;
+            PartitionKey = AggregateId = eventBase.AggregateId;
+            SortKey = $"{eventPrefix}#{eventBase.AggregateVersion}";
             AggregateVersion = eventBase.AggregateVersion;
             Timestamp = eventBase.Timestamp;
             Name = eventBase.Name;
             Data = JsonConvert.SerializeObject(eventBase);
         }
 
+        public string PartitionKey  { get; set; }
+        public string SortKey  { get; set; }
         public string AggregateId { get;set; }
         public long AggregateVersion { get;set; }
         public string Name { get;set; }

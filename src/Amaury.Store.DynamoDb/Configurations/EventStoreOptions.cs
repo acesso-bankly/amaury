@@ -24,5 +24,8 @@ namespace Amaury.Store.DynamoDb.Configurations
         public ProvisionedThroughput ProvisionedThroughput { get; set; }
 
         public string IndexName { get; set; }
+
+        public string EventPrefix { get; set; } = "EVENT#";
+        public string SnapshotPrefix { get; set; } = "SNAPSHOT#";
     }
 }
