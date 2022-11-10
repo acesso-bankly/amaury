@@ -12,8 +12,8 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/acessocard/amaury</RepositoryUrl>
     <SignAssembly>true</SignAssembly>
-    <TargetFrameworks>net5.0;netstandard2.1</TargetFrameworks>
     <LangVersion>default</LangVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>

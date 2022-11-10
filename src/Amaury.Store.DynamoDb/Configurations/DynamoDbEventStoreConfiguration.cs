@@ -55,7 +55,7 @@ namespace Amaury.Store.DynamoDb.Configurations
         public async Task<bool> TableExist(string tableName)
         {
             var table = await GetTableInformationAsync(tableName);
-			
+
             return table != null;
         }
 
