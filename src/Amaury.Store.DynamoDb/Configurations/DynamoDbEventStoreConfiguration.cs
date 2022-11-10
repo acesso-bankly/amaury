@@ -54,9 +54,21 @@ namespace Amaury.Store.DynamoDb.Configurations
 
         public async Task<bool> TableExist(string tableName)
         {
-            var tables = await _dynamoDb.ListTablesAsync();
-            var existTable = tables.TableNames.Contains(tableName);
-            return existTable;
+            var table = await GetTableInformationAsync(tableName);
+			
+            return table != null;
+        }
+
+        private async Task<DescribeTableResponse> GetTableInformationAsync(string tableName)
+        {
+            var request = new DescribeTableRequest
+            {
+                    TableName = tableName
+            };
+
+            var response = await _dynamoDb.DescribeTableAsync(request);
+
+            return response;
         }
 
         private async Task CreateIfNotExistAsync(CreateTableRequest request, string tableName)
