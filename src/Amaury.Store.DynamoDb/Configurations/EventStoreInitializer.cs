@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Amaury.Persistence.Configuration;
-using AspNetCore.AsyncInitialization;
+using Extensions.Hosting.AsyncInitialization;
 
 namespace Amaury.Store.DynamoDb.Configurations
 {
